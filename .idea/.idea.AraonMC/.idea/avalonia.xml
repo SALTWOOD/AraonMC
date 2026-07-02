@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="AraonMC/App.axaml" value="AraonMC/AraonMC.csproj" />
+        <entry key="AraonMC/Views/MainWindow.axaml" value="AraonMC/AraonMC.csproj" />
+        <entry key="AraonMC/Views/Pages/SettingsView.axaml" value="AraonMC/AraonMC.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
