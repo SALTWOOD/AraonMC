@@ -2,4 +2,5 @@
   <Project Path="AraonMC.SourceGenerators/AraonMC.SourceGenerators.csproj" />
   <Project Path="AraonMC/AraonMC.csproj" />
   <Project Path="AraonMC.Core/AraonMC.Core.csproj" />
+  <Project Path="AraonMC.Auth/AraonMC.Auth.csproj" />
 </Solution>
