@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
-namespace AraonMC.Views;
+namespace AraonMC.Notifications;
 
 public partial class NotificationWindow : Window
 {

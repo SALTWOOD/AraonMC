@@ -1,4 +1,4 @@
-namespace AraonMC.Models;
+namespace AraonMC.Core.Domain.Entities;
 
 /// <summary>
 /// A browsable mod / modpack entry shown on the Mods page.

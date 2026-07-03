@@ -1,4 +1,4 @@
-namespace AraonMC.Models;
+namespace AraonMC.Core.Domain.Entities;
 
 /// <summary>
 /// A login identity (Microsoft online or offline profile).

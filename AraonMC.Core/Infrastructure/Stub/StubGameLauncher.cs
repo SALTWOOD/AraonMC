@@ -1,9 +1,7 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AraonMC.Models;
+using AraonMC.Core.Application.Ports;
+using AraonMC.Core.Domain.Entities;
 
-namespace AraonMC.Services.Impl;
+namespace AraonMC.Core.Infrastructure.Stub;
 
 /// <summary>
 /// Stub <see cref="IGameLauncher"/>. Launch is not implemented yet.

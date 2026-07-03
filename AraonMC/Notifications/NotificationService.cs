@@ -1,19 +1,18 @@
 using System.Threading;
 using System.Threading.Tasks;
-using AraonMC.Models;
-using AraonMC.ViewModels;
-using AraonMC.Views;
+using AraonMC.Core.Application.Notifications;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 
-namespace AraonMC.Services.Impl;
+namespace AraonMC.Notifications;
 
 /// <summary>
-/// UI-layer notification service. Owns the blocking queue and spawns independent windows
-/// for non-blocking notifications. Resolves the owner/main window dynamically from the
-/// running desktop lifetime, so it can be constructed at any time.
+/// UI-layer adapter that implements <see cref="INotificationService"/>. Owns the blocking
+/// queue and spawns independent windows for non-blocking notifications. Resolves the
+/// owner/main window dynamically from the running desktop lifetime, so it can be constructed
+/// at any time.
 /// </summary>
 public sealed class NotificationService : INotificationService
 {

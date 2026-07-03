@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using AraonMC.Models;
-using AraonMC.Services;
+using AraonMC.Core.Application.Ports;
+using AraonMC.Core.Domain.Entities;
+using AraonMC.Core.Domain.Repositories;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

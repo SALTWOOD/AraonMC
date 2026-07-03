@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using AraonMC.Models;
-using AraonMC.Services;
+using AraonMC.Core.Application.Notifications;
+using AraonMC.Core.Application.Ports;
+using AraonMC.Core.Domain.Entities;
+using AraonMC.Core.Domain.Repositories;
 using AraonMC.ViewModels.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

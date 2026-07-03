@@ -1,4 +1,4 @@
-namespace AraonMC.Models;
+namespace AraonMC.Core.Domain.Enums;
 
 /// <summary>
 /// Mod loader / game flavor of an instance.

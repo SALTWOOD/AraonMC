@@ -1,11 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
-using AraonMC.Models;
 
-namespace AraonMC.Services;
+namespace AraonMC.Core.Application.Notifications;
 
 /// <summary>
-/// Displays popup notifications.
+/// Displays popup notifications (application port). Implemented by the presentation layer.
 /// </summary>
 /// <remarks>
 /// <para>

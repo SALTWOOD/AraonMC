@@ -1,12 +1,10 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AraonMC.Models;
+using AraonMC.Core.Domain.Entities;
 
-namespace AraonMC.Services;
+namespace AraonMC.Core.Application.Ports;
 
 /// <summary>
-/// Account login / identity management. Backend not implemented — see <c>Impl.StubAccountService</c>.
+/// Account login / identity management (application port). Backend not implemented
+/// yet — see the Stub implementation in Infrastructure.
 /// </summary>
 public interface IAccountService
 {

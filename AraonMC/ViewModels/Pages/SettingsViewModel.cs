@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
-using AraonMC.Models;
-using AraonMC.Services;
+using AraonMC.Core.Application.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

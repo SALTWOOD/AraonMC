@@ -1,6 +1,6 @@
 using System;
 using System.Globalization;
-using AraonMC.Models;
+using AraonMC.Core.Application.Notifications;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;

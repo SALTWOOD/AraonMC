@@ -4,8 +4,8 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
-using AraonMC.Services;
-using AraonMC.Services.Impl;
+using AraonMC.Core.Infrastructure.Stub;
+using AraonMC.Notifications;
 using AraonMC.ViewModels;
 using AraonMC.Views;
 

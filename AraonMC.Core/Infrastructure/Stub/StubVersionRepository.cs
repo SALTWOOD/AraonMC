@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AraonMC.Models;
+using AraonMC.Core.Domain.Entities;
+using AraonMC.Core.Domain.Repositories;
 
-namespace AraonMC.Services.Impl;
+namespace AraonMC.Core.Infrastructure.Stub;
 
 /// <summary>
 /// Stub <see cref="IVersionRepository"/>. Returns a hardcoded sample version manifest.

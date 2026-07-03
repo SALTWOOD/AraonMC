@@ -1,8 +1,8 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using AraonMC.Models;
-using AraonMC.Services;
+using AraonMC.Core.Application.Ports;
+using AraonMC.Core.Domain.Entities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

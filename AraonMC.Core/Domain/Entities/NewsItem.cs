@@ -1,6 +1,4 @@
-using System;
-
-namespace AraonMC.Models;
+namespace AraonMC.Core.Domain.Entities;
 
 /// <summary>
 /// A news / update entry shown on the Home page.

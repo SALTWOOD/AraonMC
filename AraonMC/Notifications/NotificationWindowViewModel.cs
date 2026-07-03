@@ -1,6 +1,7 @@
-using AraonMC.Models;
+using AraonMC.Core.Application.Notifications;
+using AraonMC.ViewModels;
 
-namespace AraonMC.ViewModels;
+namespace AraonMC.Notifications;
 
 /// <summary>
 /// Presentation model for a single <see cref="NotificationWindow"/>.

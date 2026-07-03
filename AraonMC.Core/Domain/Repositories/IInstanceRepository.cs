@@ -1,12 +1,11 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AraonMC.Models;
+using AraonMC.Core.Domain.Entities;
+using AraonMC.Core.Domain.Enums;
 
-namespace AraonMC.Services;
+namespace AraonMC.Core.Domain.Repositories;
 
 /// <summary>
-/// Local game-instance store. Backend not implemented — see <c>Impl.StubInstanceRepository</c>.
+/// Local game-instance store (repository contract). Real persistence backend
+/// is not implemented yet — see the Stub implementation in Infrastructure.
 /// </summary>
 public interface IInstanceRepository
 {

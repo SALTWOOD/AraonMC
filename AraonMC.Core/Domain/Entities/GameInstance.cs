@@ -1,6 +1,6 @@
-using System;
+using AraonMC.Core.Domain.Enums;
 
-namespace AraonMC.Models;
+namespace AraonMC.Core.Domain.Entities;
 
 /// <summary>
 /// A locally installed (or installable) game instance / profile.

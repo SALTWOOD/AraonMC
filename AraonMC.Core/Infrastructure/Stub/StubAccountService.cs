@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AraonMC.Models;
+using AraonMC.Core.Application.Ports;
+using AraonMC.Core.Domain.Entities;
 
-namespace AraonMC.Services.Impl;
+namespace AraonMC.Core.Infrastructure.Stub;
 
 /// <summary>
 /// Stub <see cref="IAccountService"/>. Returns hardcoded mock accounts so the UI is populated.
