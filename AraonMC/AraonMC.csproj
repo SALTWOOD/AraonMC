@@ -29,5 +29,22 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AraonMC.Core\AraonMC.Core.csproj"/>
+        <!-- Microsoft device-code login backend (six-step MS auth chain). -->
+        <ProjectReference Include="..\AraonMC.Auth\AraonMC.Auth.csproj"/>
+        <!-- Source generator as an analyzer: emits the Secrets class (build-time MS_CLIENT_ID) here. -->
+        <ProjectReference Include="..\AraonMC.SourceGenerators\AraonMC.SourceGenerators.csproj"
+                          OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    </ItemGroup>
+
+    <!-- Gates the SecretsSourceGenerator so only this project receives a Secrets class. -->
+    <PropertyGroup>
+        <AraonMCGenerateSecrets>true</AraonMCGenerateSecrets>
+    </PropertyGroup>
+
+    <!-- Surfaces the gate and the MS_CLIENT_ID env var (MSBuild exposes env vars as properties)
+         to the SecretsSourceGenerator as build_property.* analyzer-config options. -->
+    <ItemGroup>
+        <CompilerVisibleProperty Include="AraonMCGenerateSecrets" />
+        <CompilerVisibleProperty Include="PCL_MS_CLIENT_ID" />
     </ItemGroup>
 </Project>
