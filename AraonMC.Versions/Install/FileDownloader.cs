@@ -69,8 +69,6 @@ public sealed class FileDownloader
             }
 
             var tmp = req.TargetPath + ".tmp";
-            if (File.Exists(tmp)) File.Delete(tmp);
-
             IProgress<EngineProgress>? perFile = progress is null ? null
                 : new Progress<EngineProgress>(p =>
                 {
@@ -79,14 +77,27 @@ public sealed class FileDownloader
                     Report(Path.GetFileName(req.TargetPath), force: false);
                 });
 
-            await _engine.DownloadAsync(req.Url, tmp, perFile, token).ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
+            // 镜像偶发抽风时单文件重试，避免整批因一个文件失败。
+            Exception? lastError = null;
+            for (var attempt = 1; attempt <= 3; attempt++)
+            {
+                token.ThrowIfCancellationRequested();
+                received[idx] = 0;
+                if (File.Exists(tmp)) File.Delete(tmp);
 
-            if (req.Sha1 is not null && !Sha1Matches(tmp, req.Sha1))
-                throw new InstallException($"sha1 mismatch for {req.Url}", req.Url, req.TargetPath);
-
-            File.Move(tmp, req.TargetPath, overwrite: true);
-            if (req.Size is { } sz) received[idx] = sz;
+                try
+                {
+                    await _engine.DownloadAsync(req.Url, tmp, perFile, token).ConfigureAwait(false);
+                    if (req.Sha1 is not null && !Sha1Matches(tmp, req.Sha1))
+                        throw new InstallException($"sha1 mismatch for {req.Url}", req.Url, req.TargetPath);
+                    File.Move(tmp, req.TargetPath, overwrite: true);
+                    if (req.Size is { } sz) received[idx] = sz;
+                    return;
+                }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception ex) { lastError = ex; }
+            }
+            throw new InstallException($"download failed after 3 attempts: {req.Url}", req.Url, req.TargetPath, lastError);
         }
 
         var indexed = requests.Select((r, i) => (req: r, idx: i)).ToArray();
