@@ -27,20 +27,21 @@ internal static class LucideIconLoader
                 continue;
 
             var slug = Path.GetFileNameWithoutExtension(uri.AbsolutePath);
-            var data = ToPathData(AssetLoader.Open(uri));
-            if (string.IsNullOrWhiteSpace(data)) continue;
+            var geom = ToGeometry(AssetLoader.Open(uri));
+            if (geom is null) continue;
 
-            yield return (slug, Geometry.Parse(data));
+            yield return (slug, geom);
         }
     }
 
-    /// <summary>把 Lucide SVG 的图形元素压平为单条 Avalonia 路径数据。</summary>
-    private static string ToPathData(Stream svg)
+    /// <summary>把 Lucide SVG 的每个图形元素各建成一条独立 <see cref="Geometry"/>，装进一个 <see cref="GeometryGroup"/>。</summary>
+    /// <remarks>每个元素单独解析，当前点都从 (0,0) 起——避免相对 <c>m</c> 开头的子路径在拼接时相对到上一条终点而错位。</remarks>
+    private static Geometry? ToGeometry(Stream svg)
     {
         using (svg)
         using (var reader = XmlReader.Create(svg))
         {
-            var sb = new StringBuilder();
+            var group = new GeometryGroup { FillRule = FillRule.NonZero };
             while (reader.Read())
             {
                 if (reader.NodeType != XmlNodeType.Element) continue;
@@ -54,9 +55,10 @@ internal static class LucideIconLoader
                     "line"     => Line(reader),
                     _          => null,
                 };
-                if (!string.IsNullOrWhiteSpace(frag)) sb.Append(' ').Append(frag);
+                if (!string.IsNullOrWhiteSpace(frag))
+                    group.Children.Add(Geometry.Parse(frag));
             }
-            return sb.ToString().Trim();
+            return group.Children.Count > 0 ? group : null;
         }
     }
 
