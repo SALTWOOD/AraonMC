@@ -39,6 +39,19 @@ public partial class AccountsViewModel : PageViewModelBase
     [RelayCommand]
     private async Task AddOfflineAsync()
     {
+        // Offline profiles are only allowed when the launcher can't do Microsoft login at all
+        // (client id unset), or when the user already owns at least one Microsoft account.
+        var msLoginUnavailable = string.IsNullOrWhiteSpace(Secrets.MsOAuthClientId);
+        var hasMicrosoftAccount = Items.Any(a => a.AccountType == Core.Domain.Enums.AccountType.Microsoft);
+        if (!msLoginUnavailable && !hasMicrosoftAccount)
+        {
+            await NotifyAsync(
+                "Offline profile unavailable",
+                "You must add a Microsoft account first before creating an offline profile.",
+                NotificationLevel.Warning);
+            return;
+        }
+
         var name = await InputDialog.PromptAsync("Add offline account", "Username");
         if (string.IsNullOrWhiteSpace(name)) return;
         try { await _service.AddOfflineAsync(name); }
