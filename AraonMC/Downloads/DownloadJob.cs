@@ -22,12 +22,22 @@ public partial class DownloadJob : ObservableObject
     public string InstancePath { get; }
     public CancellationTokenSource Cts { get; } = new();
 
-    [ObservableProperty] private DownloadStatus _status = DownloadStatus.Queued;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsCancellable))] private DownloadStatus _status = DownloadStatus.Queued;
     [ObservableProperty] private double _progressPercent;
-    [ObservableProperty] private long _receivedBytes;
-    [ObservableProperty] private long _totalBytes;
-    [ObservableProperty] private double _bytesPerSecond;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private long _receivedBytes;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private long _totalBytes;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(SpeedText))] private double _bytesPerSecond;
     [ObservableProperty] private string? _errorMessage;
+
+    /// <summary>是否仍可取消（运行/排队中）。</summary>
+    public bool IsCancellable => Status is DownloadStatus.Running or DownloadStatus.Queued;
+
+    public string BytesText => $"{ToMb(ReceivedBytes):0.0} / {ToMb(TotalBytes):0.0} MB";
+
+    public string SpeedText => $"{ToMb(BytesPerSecond):0.0} MB/s";
+
+    private static double ToMb(long b) => b / (1024.0 * 1024.0);
+    private static double ToMb(double b) => b / (1024.0 * 1024.0);
 
     public DownloadJob(string title, string versionId, string instancePath)
     {

@@ -10,10 +10,12 @@ using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Config;
 using AraonMC.Core.Domain.Enums;
 using AraonMC.Core.Infrastructure.Stub;
+using AraonMC.Downloads;
 using AraonMC.Instances;
 using AraonMC.Notifications;
 using AraonMC.ViewModels;
 using AraonMC.Versions;
+using AraonMC.Versions.Install;
 using AraonMC.Views;
 // Alias (non-clashing name): the app's Config/ folder exposes namespace AraonMC.Config, which
 // would shadow the bare name `Config` over the generated facade.
@@ -66,10 +68,11 @@ public partial class App : Application
             var instances = new JsonInstanceRepository(notifications);
             var mods = new StubModRepository();
             var launcher = new StubGameLauncher();
+            var downloads = new DownloadManager(installer, notifications);
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(accounts, instances, versions, installer, mods, launcher, notifications),
+                DataContext = new MainWindowViewModel(accounts, instances, versions, installer, mods, launcher, notifications, downloads),
             };
         }
 

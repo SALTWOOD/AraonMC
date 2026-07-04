@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pages="using:AraonMC.ViewModels.Pages"
+             xmlns:dl="using:AraonMC.Downloads"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="640"
+             x:Class="AraonMC.Views.Pages.DownloadsView"
+             x:DataType="pages:DownloadsViewModel">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="JobTemplate" DataType="dl:DownloadJob">
+            <Border Classes="card" Padding="18" Margin="0,0,0,14">
+                <Grid RowDefinitions="Auto,Auto,Auto">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="{Binding VersionId}" FontSize="11"
+                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="{Binding Status}" FontSize="12" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                        <Button Grid.Column="2" Classes="subtle" Padding="14,7"
+                                IsVisible="{Binding IsCancellable}"
+                                Command="{Binding $parent[UserControl].((pages:DownloadsViewModel)DataContext).CancelCommand}"
+                                CommandParameter="{Binding}">
+                            <TextBlock Text="Cancel" FontWeight="SemiBold"/>
+                        </Button>
+                    </Grid>
+
+                    <ProgressBar Grid.Row="1" Value="{Binding ProgressPercent}" Maximum="100" Minimum="0"
+                                 Height="8" CornerRadius="4" Margin="0,12,0,8"
+                                 Foreground="{DynamicResource AccentBrush}"/>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="18">
+                        <TextBlock Text="{Binding BytesText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding SpeedText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding ProgressPercent, StringFormat='\{0:0.0\}%'}" FontSize="11"
+                                   Foreground="{DynamicResource AccentBrush}"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" FontSize="11"
+                               Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"
+                               HorizontalAlignment="Right" MaxWidth="320"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="28,8,28,28" RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,4,0,18">
+            <TextBlock Grid.Column="0" Text="Downloads" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+            <Button Grid.Column="1" Classes="subtle" Command="{Binding ClearFinishedCommand}" Padding="16,9">
+                <TextBlock Text="Clear finished" FontWeight="SemiBold"/>
+            </Button>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Jobs}" ItemTemplate="{StaticResource JobTemplate}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

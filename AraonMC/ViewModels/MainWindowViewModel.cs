@@ -4,8 +4,10 @@ using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Application.Ports;
 using AraonMC.Core.Domain.Entities;
 using AraonMC.Core.Domain.Repositories;
+using AraonMC.Downloads;
 using AraonMC.ViewModels.Pages;
 using AraonMC.Versions;
+using AraonMC.Versions.Install;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -22,11 +24,13 @@ public partial class MainWindowViewModel : ViewModelBase
         VersionInstaller installer,
         IModRepository mods,
         IGameLauncher launcher,
-        INotificationService notifications)
+        INotificationService notifications,
+        IDownloadManager downloads)
     {
         _accounts = accounts;
         var home = new HomeViewModel(launcher, instances, accounts);
         var instancesPage = new InstancesViewModel(instances, versions, installer, launcher, accounts, notifications);
+        var downloadsPage = new DownloadsViewModel(downloads);
         var modsPage = new ModsViewModel(mods);
         var accountsPage = new AccountsViewModel(accounts, notifications);
         var settings = new SettingsViewModel(notifications);
@@ -35,6 +39,7 @@ public partial class MainWindowViewModel : ViewModelBase
         [
             new NavItemViewModel(this, "HomeIcon", "Home", home),
             new NavItemViewModel(this, "BoxIcon", "Instances", instancesPage),
+            new NavItemViewModel(this, "DownloadIcon", "Downloads", downloadsPage),
             new NavItemViewModel(this, "PuzzleIcon", "Mods", modsPage),
             new NavItemViewModel(this, "PersonIcon", "Accounts", accountsPage),
             new NavItemViewModel(this, "GearIcon", "Settings", settings),
