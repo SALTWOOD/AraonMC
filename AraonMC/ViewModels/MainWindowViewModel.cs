@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Application.Ports;
@@ -16,6 +17,8 @@ namespace AraonMC.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IAccountService _accounts;
+    private readonly HomeViewModel _homePage;
+    private readonly InstancesViewModel _instancesPage;
     private readonly VersionSelectViewModel _versionSelectPage;
     private NavItemViewModel? _downloadsItem;
 
@@ -32,10 +35,10 @@ public partial class MainWindowViewModel : ViewModelBase
         Func<ResourceInfo, Task<ResourceVersion?>> pickVersion)
     {
         _accounts = accounts;
-        var home = new HomeViewModel(launcher, instances, accounts);
-        var instancesPage = new InstancesViewModel(instances, launcher, accounts, notifications, ShowVersionSelect);
+        _homePage = new HomeViewModel(launcher, instances, accounts, notifications);
+        _instancesPage = new InstancesViewModel(instances, launcher, accounts, notifications, ShowVersionSelect);
         var downloadsPage = new DownloadsViewModel(downloads);
-        _versionSelectPage = new VersionSelectViewModel(versions, instances, downloads, NavigateToDownloads);
+        _versionSelectPage = new VersionSelectViewModel(versions, instances, downloads, NavigateToDownloads, RefreshInstancePages);
         var browsePage = new BrowseViewModel(resources, downloads, notifications, pickSaveFile, pickVersion);
         var accountsPage = new AccountsViewModel(accounts, notifications);
         var settings = new SettingsViewModel(notifications, pickFolder);
@@ -45,8 +48,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
         NavItems =
         [
-            new NavItemViewModel(this, "house", "Home", home),
-            new NavItemViewModel(this, "package", "Instances", instancesPage),
+            new NavItemViewModel(this, "house", "Home", _homePage),
+            new NavItemViewModel(this, "package", "Instances", _instancesPage),
             downloadsItem,
             new NavItemViewModel(this, "puzzle", "Browse", browsePage),
             new NavItemViewModel(this, "user", "Accounts", accountsPage),

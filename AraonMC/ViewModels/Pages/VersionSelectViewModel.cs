@@ -19,18 +19,21 @@ public partial class VersionSelectViewModel : PageViewModelBase
     private readonly IInstanceRepository _repo;
     private readonly IDownloadManager _downloads;
     private readonly Action _onInstalled;
+    private readonly Action _onInstancesChanged;
     private readonly List<MinecraftVersion> _all = new();
 
     public VersionSelectViewModel(
         IVersionList versions,
         IInstanceRepository repo,
         IDownloadManager downloads,
-        Action onInstalled)
+        Action onInstalled,
+        Action onInstancesChanged)
     {
         _versions = versions;
         _repo = repo;
         _downloads = downloads;
         _onInstalled = onInstalled;
+        _onInstancesChanged = onInstancesChanged;
         Title = "New Instance";
         _ = LoadAsync();
     }
@@ -68,6 +71,7 @@ public partial class VersionSelectViewModel : PageViewModelBase
         if (string.IsNullOrWhiteSpace(name)) return; // cancelled.
 
         var instance = await _repo.CreateAsync(name, version, LoaderType.Vanilla);
+        _onInstancesChanged(); // refresh the Home page dropdown + Instances page immediately
         await _downloads.EnqueueAsync(instance);
         _onInstalled();
     }
