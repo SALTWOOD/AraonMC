@@ -38,4 +38,14 @@ public static class ConfigPaths
     public static string GlobalConfigFile() => Path.Combine(GlobalRoot(), "config.toml");
 
     public static string InstancesConfigFile() => Path.Combine(GlobalRoot(), "instances.toml");
+
+    /// <summary>
+    /// 游戏根目录（.minecraft）：取 config 配置值，为空时默认 <c>&lt;GlobalRoot&gt;/.minecraft</c>
+    /// （Windows 上即 <c>%APPDATA%\AraonMC\.minecraft</c>）。
+    /// </summary>
+    public static string GameDirectory()
+    {
+        var dir = Config.Game.GameDirectory;
+        return !string.IsNullOrWhiteSpace(dir) ? dir : Path.Combine(GlobalRoot(), ".minecraft");
+    }
 }

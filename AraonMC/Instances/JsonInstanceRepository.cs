@@ -6,7 +6,6 @@ using AraonMC.Core.Config;
 using AraonMC.Core.Domain.Entities;
 using AraonMC.Core.Domain.Enums;
 using AraonMC.Core.Domain.Repositories;
-using CoreConfig = AraonMC.Core.Config.Config;
 
 namespace AraonMC.Instances;
 
@@ -31,7 +30,7 @@ public sealed class JsonInstanceRepository : IInstanceRepository
     {
         _notifications = notifications;
         _file = Path.Combine(ConfigPaths.GlobalRoot(), "instances.json");
-        _rootDir = ResolveRoot();
+        _rootDir = ConfigPaths.GameDirectory();
         _instances = Load();
     }
 
@@ -69,12 +68,6 @@ public sealed class JsonInstanceRepository : IInstanceRepository
             Directory.Delete(instance.Path, recursive: true);
         Save();
         return Task.CompletedTask;
-    }
-
-    private static string ResolveRoot()
-    {
-        var dir = CoreConfig.Game.GameDirectory;
-        return !string.IsNullOrWhiteSpace(dir) ? dir : Path.Combine(ConfigPaths.GlobalRoot(), "instances");
     }
 
     private List<GameInstance> Load()
