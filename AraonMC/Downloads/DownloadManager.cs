@@ -38,9 +38,11 @@ public sealed class DownloadManager : IDownloadManager
 
     public Task<DownloadJob> EnqueueAsync(GameInstance instance)
     {
-        // 同一实例已有进行中的任务则不重复入队。
+        // 同一游戏目录下同一版本已有进行中的任务则不重复入队（共享 .minecraft 下多实例可能同路径不同版本）。
         var existing = Jobs.FirstOrDefault(j =>
-            j.InstancePath == instance.Path && j.Status is DownloadStatus.Running or DownloadStatus.Queued);
+            j.InstancePath == instance.Path
+            && j.VersionId == instance.MinecraftVersion
+            && j.Status is DownloadStatus.Running or DownloadStatus.Queued);
         if (existing is not null) return Task.FromResult(existing);
 
         var job = new DownloadJob(instance.Name, instance.MinecraftVersion, instance.Path);

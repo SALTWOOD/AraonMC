@@ -13,7 +13,7 @@ public sealed class GameInstance
     public LoaderType Loader { get; set; } = LoaderType.Vanilla;
     public string LoaderVersion { get; set; } = string.Empty;
 
-    /// <summary>实例目录绝对路径（持久化，用于删除与 config 实例键投影）。</summary>
+    /// <summary>共享的 .minecraft 游戏根目录绝对路径（实例只是「版本 + 设置」的引用，不拥有独立目录）。</summary>
     public string Path { get; set; } = string.Empty;
 
     public string? CoverKey { get; set; }

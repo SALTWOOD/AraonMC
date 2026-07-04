@@ -11,7 +11,9 @@ namespace AraonMC.Instances;
 
 /// <summary>
 /// JSON 持久化的 <see cref="IInstanceRepository"/>：<c>instances.json</c> 于 config 根，
-/// 原子写（temp + rename）。每个实例一个独立隔离目录 <c>&lt;GameDirectory&gt;/&lt;id&gt;</c>。
+/// 原子写（temp + rename）。共享式 .minecraft：实例只是「版本 + 设置」的引用，
+/// 游戏文件写入共享游戏根（<c>&lt;GameDirectory&gt;</c>）——<c>versions/&lt;id&gt;/</c> 按版本分文件夹，
+/// <c>libraries/</c>、<c>assets/</c> 跨版本共享；不创建隔离目录。
 /// </summary>
 public sealed class JsonInstanceRepository : IInstanceRepository
 {
@@ -39,16 +41,16 @@ public sealed class JsonInstanceRepository : IInstanceRepository
     public Task<GameInstance> CreateAsync(string name, MinecraftVersion version, LoaderType loader, CancellationToken ct = default)
     {
         var id = MakeId(name);
-        var path = Path.Combine(_rootDir, id);
-        Directory.CreateDirectory(path);
 
+        // 共享式：实例只是 (版本 + 设置) 的引用，不创建独立目录。
+        // 游戏文件（versions/<id>/ 与共享的 libraries/、assets/）由安装器写入 _rootDir。
         var instance = new GameInstance
         {
             Id = id,
             Name = name,
             MinecraftVersion = version.Id,
             Loader = loader,
-            Path = path,
+            Path = _rootDir,
         };
         _instances.Add(instance);
         Save();
@@ -64,8 +66,12 @@ public sealed class JsonInstanceRepository : IInstanceRepository
     public Task DeleteAsync(GameInstance instance, CancellationToken ct = default)
     {
         _instances.RemoveAll(x => x.Id == instance.Id);
-        if (!string.IsNullOrEmpty(instance.Path) && Directory.Exists(instance.Path))
-            Directory.Delete(instance.Path, recursive: true);
+
+        // 只删该版本的核心文件（versions/<version>/）；libraries/、assets/ 跨版本共享，不动。
+        var versionDir = Path.Combine(instance.Path, "versions", instance.MinecraftVersion);
+        if (Directory.Exists(versionDir))
+            Directory.Delete(versionDir, recursive: true);
+
         Save();
         return Task.CompletedTask;
     }
