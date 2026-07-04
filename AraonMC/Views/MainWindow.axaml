@@ -125,18 +125,18 @@
                                 <Border CornerRadius="10" Padding="10,8">
                                     <Grid ColumnDefinitions="Auto,*,Auto">
                                         <Border Classes="avatar" Width="34" Height="34" Background="{DynamicResource AccentBrush}">
-                                            <TextBlock Text="{Binding ActiveAccount.AvatarKey}"
+                                            <TextBlock Text="{Binding AccountFooterAvatarKey}"
                                                        Foreground="{DynamicResource AccentForegroundBrush}"
                                                        FontWeight="Bold" FontSize="13"
                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding ActiveAccount.Username}"
+                                            <TextBlock Text="{Binding AccountFooterName}"
                                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                                        FontWeight="SemiBold"/>
                                             <StackPanel Orientation="Horizontal" Spacing="6">
                                                 <Ellipse Width="7" Height="7" Fill="{DynamicResource OnlineBrush}" IsVisible="{Binding ActiveAccount.IsOnline}" VerticalAlignment="Center"/>
-                                                <TextBlock Text="{Binding ActiveAccount.IsOnline, Converter={StaticResource BoolToStatus}}"
+                                                <TextBlock Text="{Binding AccountFooterStatus}"
                                                            Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11"/>
                                             </StackPanel>
                                         </StackPanel>

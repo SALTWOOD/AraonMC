@@ -44,11 +44,31 @@ public partial class InstancesViewModel : PageViewModelBase
 
     [ObservableProperty] private string _searchText = string.Empty;
 
+    /// <summary>Reloads the instance list from the repository and reapplies the current search filter.</summary>
+    public void RefreshInstances()
+    {
+        _all.Clear();
+        _all.AddRange(_repo.GetAll());
+        ApplyFilter();
+    }
+
     [RelayCommand]
     private async Task PlayAsync(GameInstance? instance)
     {
         if (instance is null) return;
-        await _launcher.LaunchAsync(instance, _accounts.GetActive()!);
+
+        var account = _accounts.GetActive();
+        if (account is null)
+        {
+            await _notifications.ShowAsync(NotificationRequest.Toast(
+                "No account",
+                "Add or select an account before launching.",
+                NotificationLevel.Warning));
+            return;
+        }
+
+        DebugLog.Info($"Instances: launching '{instance.Name}' with active account '{account.Username}' (uuid={account.Uuid}).");
+        await _launcher.LaunchAsync(instance, account);
     }
 
     [RelayCommand]

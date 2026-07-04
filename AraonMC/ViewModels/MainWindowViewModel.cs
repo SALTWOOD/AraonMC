@@ -55,7 +55,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
         // Share the service-owned live list so account add/remove stays in sync with this switcher.
         Accounts = accounts.Accounts;
+        Accounts.CollectionChanged += Accounts_CollectionChanged;
         ActiveAccount = accounts.GetActive();
+        SyncAccountFooter();
 
         Navigate(NavItems[0]);
     }
@@ -66,6 +68,10 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private PageViewModelBase? _currentPage;
     [ObservableProperty] private MinecraftAccount? _activeAccount;
     [ObservableProperty] private bool _isAccountSwitcherOpen;
+    [ObservableProperty] private bool _hasAccounts;
+    [ObservableProperty] private string _accountFooterName = "No Accounts";
+    [ObservableProperty] private string _accountFooterStatus = "Go to Accounts page to add one";
+    [ObservableProperty] private string _accountFooterAvatarKey = "?";
 
     public void Navigate(NavItemViewModel item)
     {
@@ -85,6 +91,28 @@ public partial class MainWindowViewModel : ViewModelBase
         if (_downloadsItem is not null) Navigate(_downloadsItem);
     }
 
+    /// <summary>Refreshes all pages that present the live instance list after create/rename/delete.</summary>
+    private void RefreshInstancePages()
+    {
+        _homePage.RefreshInstances();
+        _instancesPage.RefreshInstances();
+    }
+
+    private void Accounts_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        ActiveAccount = _accounts.GetActive();
+        SyncAccountFooter();
+    }
+
+    private void SyncAccountFooter()
+    {
+        var active = _accounts.GetActive();
+        HasAccounts = active is not null;
+        AccountFooterName = active?.Username ?? "No Accounts";
+        AccountFooterStatus = active is null ? "Go to Accounts page to add one" : (active.IsOnline ? "Online" : "Offline");
+        AccountFooterAvatarKey = active?.AvatarKey ?? "?";
+    }
+
     [RelayCommand]
     private void ToggleAccountSwitcher() => IsAccountSwitcherOpen = !IsAccountSwitcherOpen;
 
@@ -94,6 +122,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (account is null) return;
         await _accounts.SetActiveAsync(account);
         ActiveAccount = account;
+        SyncAccountFooter();
         IsAccountSwitcherOpen = false;
     }
 }
