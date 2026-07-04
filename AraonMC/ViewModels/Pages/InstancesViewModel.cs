@@ -42,8 +42,7 @@ public partial class InstancesViewModel : PageViewModelBase
     private async Task PlayAsync(GameInstance? instance)
     {
         if (instance is null) return;
-        try { await _launcher.LaunchAsync(instance, _accounts.GetActive()!); }
-        catch (NotImplementedException) { /* launch backend pending */ }
+        await _launcher.LaunchAsync(instance, _accounts.GetActive()!);
     }
 
     [RelayCommand]

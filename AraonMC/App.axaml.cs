@@ -11,15 +11,15 @@ using AraonMC.Accounts;
 using AraonMC.Auth;
 using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Config;
-using AraonMC.Core.Domain.Enums;
 using AraonMC.Core.Infrastructure.Stub;
 using AraonMC.Downloads;
 using AraonMC.Instances;
+using AraonMC.Launching;
 using AraonMC.Notifications;
 using AraonMC.ViewModels;
-using AraonMC.Versions;
-using AraonMC.Versions.Install;
 using AraonMC.Views;
+using MinecraftDownloader.Core.Manifest;
+using MinecraftDownloader.Core.Orchestration;
 // Alias (non-clashing name): the app's Config/ folder exposes namespace AraonMC.Config, which
 // would shadow the bare name `Config` over the generated facade.
 using CoreConfig = AraonMC.Core.Config.Config;
@@ -61,17 +61,15 @@ public partial class App : Application
             var accountStore = new JsonAccountStore(notifications);
             var accounts = new AccountService(authenticator, deviceCodeUi, accountStore);
 
-            var http = new HttpClient();
-            var mirror = CoreConfig.Download.Mirror;
-            IVersionList versions = mirror == DownloadMirror.Bmclapi
-                ? new BmclapiVersionList(http)
-                : new OfficialVersionList(http);
-            var installer = new VersionInstaller(versions, mirror, http);
+            var http = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
+            var installer = InstallerFactory.Create(http);
+            IVersionList versions = new MinecraftVersionCatalog(new MojangManifestParser(http));
+            var natives = new NativeLibraryExtractor(http);
 
             var instances = new JsonInstanceRepository(notifications);
             var mods = new StubModRepository();
-            var launcher = new StubGameLauncher();
-            var downloads = new DownloadManager(installer, notifications);
+            var launcher = new MinecraftGameLauncher(accounts, notifications);
+            var downloads = new DownloadManager(installer, natives, notifications);
 
             var window = new MainWindow();
             Func<Task<string?>> pickFolder = async () =>

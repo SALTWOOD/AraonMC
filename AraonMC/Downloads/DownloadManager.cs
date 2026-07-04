@@ -1,7 +1,8 @@
 using System.Collections.ObjectModel;
 using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Domain.Entities;
-using AraonMC.Versions.Install;
+using MinecraftDownloader.Core.Models;
+using MinecraftDownloader.Core.Orchestration;
 
 namespace AraonMC.Downloads;
 
@@ -19,12 +20,17 @@ public interface IDownloadManager
 /// <summary>管理所有下载/安装任务的生命周期与进度。</summary>
 public sealed class DownloadManager : IDownloadManager
 {
-    private readonly VersionInstaller _installer;
+    private readonly MinecraftInstaller _installer;
+    private readonly NativeLibraryExtractor _natives;
     private readonly INotificationService _notifications;
 
-    public DownloadManager(VersionInstaller installer, INotificationService notifications)
+    public DownloadManager(
+        MinecraftInstaller installer,
+        NativeLibraryExtractor natives,
+        INotificationService notifications)
     {
         _installer = installer;
+        _natives = natives;
         _notifications = notifications;
     }
 
@@ -55,10 +61,33 @@ public sealed class DownloadManager : IDownloadManager
     private async Task RunAsync(DownloadJob job)
     {
         job.Status = DownloadStatus.Running;
-        var progress = new Progress<InstallProgress>(job.Apply);
+        var progress = new Progress<DownloadProgress>(job.Apply);
+
+        var request = new InstallRequest(
+            GameVersion: job.VersionId,
+            GameDirectory: job.InstancePath,
+            Loader: LoaderKind.Vanilla,
+            MaxParallelism: 8,
+            SkipIfExists: true);
+
         try
         {
-            await _installer.InstallAsync(job.VersionId, job.InstancePath, progress, job.Cts.Token);
+            var result = await _installer.InstallAsync(request, progress, job.Cts.Token);
+
+            if (!result.Succeeded)
+            {
+                if (result.Error is OperationCanceledException)
+                {
+                    job.Status = DownloadStatus.Cancelled;
+                    return;
+                }
+                await FailAsync(job, result.Error?.Message ?? "installation failed");
+                return;
+            }
+
+            // 上游不下载/解压 native 库，这里补齐。
+            await _natives.ExtractAsync(job.InstancePath, job.VersionId, job.Cts.Token);
+
             job.Status = DownloadStatus.Completed;
             job.ProgressPercent = 100;
             await _notifications.ShowAsync(NotificationRequest.Toast(
@@ -70,10 +99,15 @@ public sealed class DownloadManager : IDownloadManager
         }
         catch (Exception ex)
         {
-            job.Status = DownloadStatus.Failed;
-            job.ErrorMessage = ex.Message;
-            await _notifications.ShowAsync(NotificationRequest.Toast(
-                "Download failed", $"{job.Title}: {ex.Message}", NotificationLevel.Error));
+            await FailAsync(job, ex.Message);
         }
+    }
+
+    private async Task FailAsync(DownloadJob job, string message)
+    {
+        job.Status = DownloadStatus.Failed;
+        job.ErrorMessage = message;
+        await _notifications.ShowAsync(NotificationRequest.Toast(
+            "Download failed", $"{job.Title}: {message}", NotificationLevel.Error));
     }
 }

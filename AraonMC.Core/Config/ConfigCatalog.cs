@@ -1,5 +1,3 @@
-using AraonMC.Core.Domain.Enums;
-
 namespace AraonMC.Core.Config;
 
 /// <summary>
@@ -36,12 +34,6 @@ public partial class Config
         [Key(Default = 1280)]  public partial int    WindowWidth { get; set; }
         [Key(Default = 720)]   public partial int    WindowHeight { get; set; }
         [Key(Default = false)] public partial bool   Fullscreen { get; set; }
-    }
-
-    [Section(Scope = ConfigScope.Global, Path = "download")]
-    public sealed partial class DownloadSection
-    {
-        [Key(Default = DownloadMirror.Official)] public partial DownloadMirror Mirror { get; set; }
     }
 
     /// <summary>

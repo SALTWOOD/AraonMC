@@ -1,6 +1,5 @@
 <Solution>
   <Project Path="AraonMC.LaunchArgs/AraonMC.LaunchArgs.csproj" />
-  <Project Path="AraonMC.Versions/AraonMC.Versions.csproj" />
   <Project Path="AraonMC.SourceGenerators/AraonMC.SourceGenerators.csproj" />
   <Project Path="AraonMC/AraonMC.csproj" />
   <Project Path="AraonMC.Core/AraonMC.Core.csproj" />

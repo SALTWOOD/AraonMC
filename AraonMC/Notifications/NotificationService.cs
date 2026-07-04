@@ -29,7 +29,23 @@ public sealed class NotificationService : INotificationService
             ? desktop.MainWindow
             : null;
 
-    public async Task ShowAsync(NotificationRequest request, CancellationToken ct = default)
+    public Task ShowAsync(NotificationRequest request, CancellationToken ct = default)
+    {
+        // 窗口创建/显示必须在 UI 线程；调用方可能在后台线程（launcher、下载后台任务），统一切回 UI 线程。
+        if (Dispatcher.UIThread.CheckAccess())
+            return ShowCoreAsync(request, ct);
+
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Dispatcher.UIThread.Post(async () =>
+        {
+            try { await ShowCoreAsync(request, ct).ConfigureAwait(true); }
+            catch (Exception ex) { tcs.SetException(ex); return; }
+            tcs.SetResult();
+        });
+        return tcs.Task;
+    }
+
+    private async Task ShowCoreAsync(NotificationRequest request, CancellationToken ct)
     {
         if (request.Mode == NotificationMode.NonBlocking)
         {

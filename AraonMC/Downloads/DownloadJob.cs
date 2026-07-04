@@ -1,5 +1,4 @@
-using System.Threading;
-using AraonMC.Versions.Install;
+using MinecraftDownloader.Core.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AraonMC.Downloads;
@@ -24,20 +23,16 @@ public partial class DownloadJob : ObservableObject
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsCancellable))] private DownloadStatus _status = DownloadStatus.Queued;
     [ObservableProperty] private double _progressPercent;
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private long _receivedBytes;
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private long _totalBytes;
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(SpeedText))] private double _bytesPerSecond;
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private int _filesDone;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private int _filesTotal;
     [ObservableProperty] private string? _errorMessage;
 
     /// <summary>是否仍可取消（运行/排队中）。</summary>
     public bool IsCancellable => Status is DownloadStatus.Running or DownloadStatus.Queued;
 
-    public string BytesText => $"{ToMb(ReceivedBytes):0.0} / {ToMb(TotalBytes):0.0} MB";
-
-    public string SpeedText => $"{ToMb(BytesPerSecond):0.0} MB/s";
-
-    private static double ToMb(long b) => b / (1024.0 * 1024.0);
-    private static double ToMb(double b) => b / (1024.0 * 1024.0);
+    /// <summary>上游只提供文件计数进度，故以“已完成/总文件数”展示。</summary>
+    public string BytesText => FilesTotal > 0 ? $"{FilesDone} / {FilesTotal} files" : "—";
 
     public DownloadJob(string title, string versionId, string instancePath)
     {
@@ -46,12 +41,11 @@ public partial class DownloadJob : ObservableObject
         InstancePath = instancePath;
     }
 
-    /// <summary>从 <see cref="InstallProgress"/> 同步进度字段。</summary>
-    public void Apply(InstallProgress p)
+    /// <summary>从上游 <see cref="DownloadProgress"/>（文件计数）同步进度字段。</summary>
+    public void Apply(DownloadProgress p)
     {
-        ReceivedBytes = p.ReceivedBytes;
-        TotalBytes = p.TotalBytes;
-        BytesPerSecond = p.BytesPerSecond;
-        ProgressPercent = p.TotalBytes > 0 ? p.ReceivedBytes * 100.0 / p.TotalBytes : ProgressPercent;
+        FilesDone = p.Completed;
+        FilesTotal = p.Total;
+        ProgressPercent = p.Total > 0 ? p.Completed * 100.0 / p.Total : ProgressPercent;
     }
 }

@@ -35,7 +35,6 @@
 
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="18">
                         <TextBlock Text="{Binding BytesText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
-                        <TextBlock Text="{Binding SpeedText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         <TextBlock Text="{Binding ProgressPercent, StringFormat='\{0:0.0\}%'}" FontSize="11"
                                    Foreground="{DynamicResource AccentBrush}"/>
                     </StackPanel>

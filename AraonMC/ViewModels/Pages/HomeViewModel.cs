@@ -36,8 +36,7 @@ public partial class HomeViewModel : PageViewModelBase
     private async Task PlayAsync()
     {
         if (SelectedInstance is null) return;
-        try { await _launcher.LaunchAsync(SelectedInstance, _accounts.GetActive()!); }
-        catch (NotImplementedException) { /* launch backend pending */ }
+        await _launcher.LaunchAsync(SelectedInstance, _accounts.GetActive()!);
     }
 
     private static IEnumerable<NewsItem> BuildNews() =>
