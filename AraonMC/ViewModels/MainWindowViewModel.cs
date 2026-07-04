@@ -5,6 +5,7 @@ using AraonMC.Core.Application.Ports;
 using AraonMC.Core.Domain.Entities;
 using AraonMC.Core.Domain.Repositories;
 using AraonMC.ViewModels.Pages;
+using AraonMC.Versions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -17,14 +18,15 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         IAccountService accounts,
         IInstanceRepository instances,
-        IVersionRepository versions,
+        IVersionList versions,
+        VersionInstaller installer,
         IModRepository mods,
         IGameLauncher launcher,
         INotificationService notifications)
     {
         _accounts = accounts;
         var home = new HomeViewModel(launcher, instances, accounts);
-        var instancesPage = new InstancesViewModel(instances, launcher, accounts);
+        var instancesPage = new InstancesViewModel(instances, versions, installer, launcher, accounts, notifications);
         var modsPage = new ModsViewModel(mods);
         var accountsPage = new AccountsViewModel(accounts, notifications);
         var settings = new SettingsViewModel(notifications);

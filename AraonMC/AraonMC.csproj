@@ -31,6 +31,8 @@
         <ProjectReference Include="..\AraonMC.Core\AraonMC.Core.csproj"/>
         <!-- Microsoft device-code login backend (six-step MS auth chain). -->
         <ProjectReference Include="..\AraonMC.Auth\AraonMC.Auth.csproj"/>
+        <!-- Minecraft version download backend (manifest + full install pipeline). -->
+        <ProjectReference Include="..\AraonMC.Versions\AraonMC.Versions.csproj"/>
         <!-- Source generator as an analyzer: emits the Secrets class (build-time MS_CLIENT_ID) here. -->
         <ProjectReference Include="..\AraonMC.SourceGenerators\AraonMC.SourceGenerators.csproj"
                           OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>

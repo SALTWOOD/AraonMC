@@ -8,9 +8,12 @@ using AraonMC.Accounts;
 using AraonMC.Auth;
 using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Config;
+using AraonMC.Core.Domain.Enums;
 using AraonMC.Core.Infrastructure.Stub;
+using AraonMC.Instances;
 using AraonMC.Notifications;
 using AraonMC.ViewModels;
+using AraonMC.Versions;
 using AraonMC.Views;
 // Alias (non-clashing name): the app's Config/ folder exposes namespace AraonMC.Config, which
 // would shadow the bare name `Config` over the generated facade.
@@ -53,14 +56,20 @@ public partial class App : Application
             var accountStore = new JsonAccountStore(notifications);
             var accounts = new AccountService(authenticator, deviceCodeUi, accountStore);
 
-            var instances = new StubInstanceRepository();
-            var versions = new StubVersionRepository();
+            var http = new HttpClient();
+            var mirror = CoreConfig.Download.Mirror;
+            IVersionList versions = mirror == DownloadMirror.Bmclapi
+                ? new BmclapiVersionList(http)
+                : new OfficialVersionList(http);
+            var installer = new VersionInstaller(versions, mirror, http);
+
+            var instances = new JsonInstanceRepository(notifications);
             var mods = new StubModRepository();
             var launcher = new StubGameLauncher();
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(accounts, instances, versions, mods, launcher, notifications),
+                DataContext = new MainWindowViewModel(accounts, instances, versions, installer, mods, launcher, notifications),
             };
         }
 
