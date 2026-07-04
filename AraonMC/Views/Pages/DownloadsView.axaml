@@ -16,7 +16,7 @@
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <TextBlock Text="{Binding VersionId}" FontSize="11"
+                            <TextBlock Text="{Binding Detail}" FontSize="11"
                                        Foreground="{DynamicResource TextMutedBrush}"/>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="{Binding Status}" FontSize="12" FontWeight="SemiBold"
@@ -34,7 +34,7 @@
                                  Foreground="{DynamicResource AccentBrush}"/>
 
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="18">
-                        <TextBlock Text="{Binding BytesText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding ProgressText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         <TextBlock Text="{Binding ProgressPercent, StringFormat='\{0:0.0\}%'}" FontSize="11"
                                    Foreground="{DynamicResource AccentBrush}"/>
                     </StackPanel>

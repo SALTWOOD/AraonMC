@@ -11,7 +11,8 @@ using AraonMC.Accounts;
 using AraonMC.Auth;
 using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Config;
-using AraonMC.Core.Infrastructure.Stub;
+using AraonMC.Core.Domain.Entities;
+using AraonMC.Core.Infrastructure.Catalog;
 using AraonMC.Downloads;
 using AraonMC.Instances;
 using AraonMC.Launching;
@@ -76,9 +77,11 @@ public partial class App : Application
             var natives = new NativeLibraryExtractor(http);
 
             var instances = new JsonInstanceRepository(notifications);
-            var mods = new StubModRepository();
+            var modrinth = new ModrinthClient(http);
+            var curseForge = new CurseForgeClient(http, Secrets.CurseForgeApiKey);
+            var resources = new ResourceRepository(modrinth, curseForge, notifications);
             var launcher = new MinecraftGameLauncher(accounts, natives, notifications);
-            var downloads = new DownloadManager(installer, natives, notifications);
+            var downloads = new DownloadManager(installer, natives, http, notifications);
 
             var window = new MainWindow();
             Func<Task<string?>> pickFolder = async () =>
@@ -87,7 +90,26 @@ public partial class App : Application
                     new FolderPickerOpenOptions { Title = "Select .minecraft folder" });
                 return result.Count > 0 ? result[0].Path.LocalPath : null;
             };
-            window.DataContext = new MainWindowViewModel(accounts, instances, versions, downloads, mods, launcher, notifications, pickFolder);
+            Func<string?, Task<string?>> pickSaveFile = async suggestedName =>
+            {
+                var file = await window.StorageProvider.SaveFilePickerAsync(
+                    new FilePickerSaveOptions
+                    {
+                        Title = "Save file",
+                        SuggestedFileName = string.IsNullOrEmpty(suggestedName) ? null : suggestedName,
+                        ShowOverwritePrompt = true,
+                    });
+                return file?.Path.LocalPath;
+            };
+            Func<ResourceInfo, Task<ResourceVersion?>> pickVersion = async resource =>
+            {
+                var vm = new ResourceVersionViewModel(resource, resources);
+                var versionWindow = new ResourceVersionWindow { DataContext = vm };
+                vm.RequestClose += () => versionWindow.Close();
+                await versionWindow.ShowDialog(window);
+                return vm.SelectedVersion;
+            };
+            window.DataContext = new MainWindowViewModel(accounts, instances, versions, downloads, resources, launcher, notifications, pickFolder, pickSaveFile, pickVersion);
             desktop.MainWindow = window;
         }
 

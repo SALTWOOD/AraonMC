@@ -24,17 +24,19 @@ public partial class MainWindowViewModel : ViewModelBase
         IInstanceRepository instances,
         IVersionList versions,
         IDownloadManager downloads,
-        IModRepository mods,
+        IResourceRepository resources,
         IGameLauncher launcher,
         INotificationService notifications,
-        Func<Task<string?>> pickFolder)
+        Func<Task<string?>> pickFolder,
+        Func<string?, Task<string?>> pickSaveFile,
+        Func<ResourceInfo, Task<ResourceVersion?>> pickVersion)
     {
         _accounts = accounts;
         var home = new HomeViewModel(launcher, instances, accounts);
-        var instancesPage = new InstancesViewModel(instances, launcher, accounts, ShowVersionSelect);
+        var instancesPage = new InstancesViewModel(instances, launcher, accounts, notifications, ShowVersionSelect);
         var downloadsPage = new DownloadsViewModel(downloads);
         _versionSelectPage = new VersionSelectViewModel(versions, instances, downloads, NavigateToDownloads);
-        var modsPage = new ModsViewModel(mods);
+        var browsePage = new BrowseViewModel(resources, downloads, notifications, pickSaveFile, pickVersion);
         var accountsPage = new AccountsViewModel(accounts, notifications);
         var settings = new SettingsViewModel(notifications, pickFolder);
 
@@ -46,7 +48,7 @@ public partial class MainWindowViewModel : ViewModelBase
             new NavItemViewModel(this, "house", "Home", home),
             new NavItemViewModel(this, "package", "Instances", instancesPage),
             downloadsItem,
-            new NavItemViewModel(this, "puzzle", "Mods", modsPage),
+            new NavItemViewModel(this, "puzzle", "Browse", browsePage),
             new NavItemViewModel(this, "user", "Accounts", accountsPage),
             new NavItemViewModel(this, "settings", "Settings", settings),
         ];

@@ -14,11 +14,12 @@ public partial class InputDialog : Window
         InitializeComponent();
     }
 
-    private InputDialog(string title, string placeholder)
+    private InputDialog(string title, string placeholder, string defaultValue)
     {
         InitializeComponent();
         DialogTitle.Text = title;
         InputBox.Watermark = placeholder;
+        InputBox.Text = defaultValue;
     }
 
     private void Ok_Click(object? sender, RoutedEventArgs e)
@@ -29,12 +30,12 @@ public partial class InputDialog : Window
 
     private void Cancel_Click(object? sender, RoutedEventArgs e) => Close(null);
 
-    public static async Task<string?> PromptAsync(string title, string placeholder = "")
+    public static async Task<string?> PromptAsync(string title, string placeholder = "", string defaultValue = "")
     {
         var owner = ResolveMainWindow();
         if (owner is null) return null;
 
-        var dialog = new InputDialog(title, placeholder)
+        var dialog = new InputDialog(title, placeholder, defaultValue)
         {
             WindowStartupLocation = WindowStartupLocation.CenterOwner
         };

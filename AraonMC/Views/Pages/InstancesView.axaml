@@ -34,7 +34,7 @@
                         <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold"
                                    Foreground="{DynamicResource TextPrimaryBrush}"/>
                         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                            <TextBlock Text="{Binding MinecraftVersion}" FontSize="12"
+                            <TextBlock Text="{Binding DisplayVersion}" FontSize="12"
                                        Foreground="{DynamicResource TextSecondaryBrush}"/>
                             <TextBlock Text="·" Foreground="{DynamicResource TextMutedBrush}"/>
                             <TextBlock Text="{Binding DisplayLoader}" FontSize="12"
@@ -48,8 +48,8 @@
                                    Foreground="{DynamicResource TextPrimaryBrush}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="3" Margin="16,12,16,16" Orientation="Horizontal" Spacing="8">
-                        <Button Classes="accent" Padding="16,8"
+                    <Grid Grid.Row="3" Margin="16,12,16,16" ColumnDefinitions="Auto,Auto,*,Auto,Auto">
+                        <Button Grid.Column="0" Classes="accent" Padding="16,8"
                                 Command="{Binding $parent[UserControl].((pages:InstancesViewModel)DataContext).PlayCommand}"
                                 CommandParameter="{Binding}">
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -59,10 +59,28 @@
                                 <TextBlock Text="Play" FontWeight="Bold" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                        <TextBlock Text="{Binding PlayTime}" FontSize="11"
+                        <TextBlock Grid.Column="1" Text="{Binding PlayTime}" FontSize="11"
                                    Foreground="{DynamicResource TextMutedBrush}"
-                                   VerticalAlignment="Center" Margin="6,0,0,0"/>
-                    </StackPanel>
+                                   VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <Button Grid.Column="3" Classes="icon" Width="30" Height="30"
+                                VerticalAlignment="Center" ToolTip.Tip="Rename"
+                                Command="{Binding $parent[UserControl].((pages:InstancesViewModel)DataContext).RenameCommand}"
+                                CommandParameter="{Binding}">
+                            <Path Width="14" Height="14" Stretch="Uniform"
+                                  Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.8"
+                                  StrokeLineCap="Round" StrokeJoin="Round" Fill="Transparent"
+                                  Data="{StaticResource pencil}"/>
+                        </Button>
+                        <Button Grid.Column="4" Classes="icon" Width="30" Height="30"
+                                VerticalAlignment="Center" ToolTip.Tip="Remove"
+                                Command="{Binding $parent[UserControl].((pages:InstancesViewModel)DataContext).RemoveCommand}"
+                                CommandParameter="{Binding}">
+                            <Path Width="14" Height="14" Stretch="Uniform"
+                                  Stroke="{DynamicResource DangerBrush}" StrokeThickness="1.8"
+                                  StrokeLineCap="Round" StrokeJoin="Round" Fill="Transparent"
+                                  Data="{StaticResource trash-2}"/>
+                        </Button>
+                    </Grid>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -89,7 +107,9 @@
             <Button Grid.Column="2" Classes="accent" Command="{Binding NewCommand}" Padding="16,9">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Path Width="14" Height="14" Stretch="Uniform"
-                          Fill="{DynamicResource AccentForegroundBrush}" Stroke="Transparent"
+                          Stroke="{DynamicResource AccentForegroundBrush}" StrokeThickness="2"
+                          StrokeLineCap="Round" StrokeJoin="Round"
+                          Fill="Transparent"
                           Data="{StaticResource plus}"/>
                     <TextBlock Text="New Instance" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </StackPanel>

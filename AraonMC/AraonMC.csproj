@@ -44,10 +44,16 @@
         <AraonMCGenerateSecrets>true</AraonMCGenerateSecrets>
     </PropertyGroup>
 
-    <!-- Surfaces the gate and the MS_CLIENT_ID env var (MSBuild exposes env vars as properties)
+    <!-- Surfaces the gate and the secret env vars (MSBuild exposes env vars as properties)
          to the SecretsSourceGenerator as build_property.* analyzer-config options. -->
     <ItemGroup>
         <CompilerVisibleProperty Include="AraonMCGenerateSecrets" />
         <CompilerVisibleProperty Include="PCL_MS_CLIENT_ID" />
+        <CompilerVisibleProperty Include="PCL_CURSEFORGE_API_KEY" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Views\InstallConfirmWindow.axaml.cs">
+        <DependentUpon>InstallConfirmWindow.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

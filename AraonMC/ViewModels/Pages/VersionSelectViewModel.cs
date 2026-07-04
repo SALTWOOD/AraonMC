@@ -7,6 +7,7 @@ using AraonMC.Core.Domain.Entities;
 using AraonMC.Core.Domain.Enums;
 using AraonMC.Core.Domain.Repositories;
 using AraonMC.Downloads;
+using AraonMC.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -61,7 +62,12 @@ public partial class VersionSelectViewModel : PageViewModelBase
     private async Task InstallAsync(MinecraftVersion? version)
     {
         if (version is null) return;
-        var instance = await _repo.CreateAsync($"Minecraft {version.Id}", version, LoaderType.Vanilla);
+
+        // Confirm the instance name (and loader, a placeholder for now) before installing.
+        var name = await InstallConfirmWindow.ShowAsync(version, _repo);
+        if (string.IsNullOrWhiteSpace(name)) return; // cancelled.
+
+        var instance = await _repo.CreateAsync(name, version, LoaderType.Vanilla);
         await _downloads.EnqueueAsync(instance);
         _onInstalled();
     }

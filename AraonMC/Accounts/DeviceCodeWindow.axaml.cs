@@ -29,7 +29,7 @@ public partial class DeviceCodeWindow : Window
 
     private async void Copy_Click(object? sender, RoutedEventArgs e)
     {
-        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+        var clipboard = GetTopLevel(this)?.Clipboard;
         if (clipboard is not null)
             await clipboard.SetTextAsync(_info.UserCode);
     }

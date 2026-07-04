@@ -1,0 +1,127 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AraonMC.ViewModels"
+        xmlns:conv="using:AraonMC.Converters"
+        x:Class="AraonMC.Views.InstallConfirmWindow"
+        Title="New Instance"
+        Width="560"
+        SizeToContent="Height"
+        CanResize="False"
+        ShowInTaskbar="False"
+        ShowActivated="True"
+        Background="Transparent"
+        TransparencyBackgroundFallback="#FF1B1B2A"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        WindowStartupLocation="CenterOwner"
+        x:DataType="vm:InstallConfirmViewModel">
+
+    <Window.Resources>
+        <conv:BoolToBrushConverter x:Key="DuplicateNameBrush"/>
+    </Window.Resources>
+
+    <Border CornerRadius="14"
+            Background="{DynamicResource BackgroundBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
+            ClipToBounds="True">
+
+        <DockPanel LastChildFill="True">
+
+            <!-- Header -->
+            <Border DockPanel.Dock="Top" Padding="22,16"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderSoftBrush}" BorderThickness="0,0,0,1">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="New Instance" FontSize="16" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="{Binding Version.Id}" FontSize="11"
+                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="icon" Width="32" Height="32"
+                            VerticalAlignment="Center" Click="Close_Click">
+                        <Path Width="14" Height="14" Stretch="Uniform"
+                              Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.5"
+                              Fill="Transparent" Data="{StaticResource x}"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Footer -->
+            <Border DockPanel.Dock="Bottom" Padding="22,14"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderSoftBrush}" BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                    <Button Classes="subtle" Click="Close_Click" MinWidth="90" Padding="0,9">
+                        <TextBlock Text="Cancel" FontWeight="SemiBold"/>
+                    </Button>
+                    <Button Classes="accent" Command="{Binding StartInstallCommand}" MinWidth="120" Padding="0,9">
+                        <TextBlock Text="Start Install" FontWeight="SemiBold"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <!-- Body -->
+            <ScrollViewer Padding="22,18" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Spacing="20">
+
+                    <!-- Instance name -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Instance name" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBox x:Name="NameBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                 Classes="field"
+                                 Foreground="{Binding IsNameDuplicate, Converter={StaticResource DuplicateNameBrush}, ConverterParameter=DangerBrush|TextPrimaryBrush}"/>
+                        <TextBlock Text="An instance with this name already exists."
+                                   FontSize="11" Foreground="{DynamicResource DangerBrush}"
+                                   IsVisible="{Binding IsNameDuplicate}"/>
+                    </StackPanel>
+
+                    <!-- Mod loader (placeholder cards; selection not wired to install yet) -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Mod loader" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <ListBox ItemsSource="{Binding Loaders}"
+                                 SelectedItem="{Binding SelectedLoader}"
+                                 Background="Transparent" BorderThickness="0" Padding="0" MinHeight="0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Padding" Value="14,7"/>
+                                    <Setter Property="Margin" Value="0,0,8,8"/>
+                                    <Setter Property="MinHeight" Value="0"/>
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                    <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
+                                </Style>
+                            </ListBox.Styles>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <TextBlock Text="{Binding}" FontSize="13" FontWeight="SemiBold"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock Text="Loader versions aren't configurable yet — Start Install sets up a vanilla instance."
+                                   FontSize="11" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</Window>

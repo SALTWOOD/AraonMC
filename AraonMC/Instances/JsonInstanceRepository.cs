@@ -11,8 +11,7 @@ namespace AraonMC.Instances;
 
 /// <summary>
 /// JSON 持久化的 <see cref="IInstanceRepository"/>：<c>instances.json</c> 于 config 根，
-/// 原子写（temp + rename）。共享式 .minecraft：实例只是「版本 + 设置」的引用，
-/// 游戏文件写入共享游戏根（<c>&lt;GameDirectory&gt;</c>）——<c>versions/&lt;id&gt;/</c> 按版本分文件夹，
+/// 原子写（temp + rename）。共享式 .minecraft：实例名绑定到 <c>versions/&lt;name&gt;/</c> 目录；
 /// <c>libraries/</c>、<c>assets/</c> 跨版本共享；不创建隔离目录。
 /// </summary>
 public sealed class JsonInstanceRepository : IInstanceRepository
@@ -40,15 +39,15 @@ public sealed class JsonInstanceRepository : IInstanceRepository
 
     public Task<GameInstance> CreateAsync(string name, MinecraftVersion version, LoaderType loader, CancellationToken ct = default)
     {
-        var id = MakeId(name);
+        var instanceName = ValidateInstanceName(name);
+        EnsureNameAvailable(instanceName, except: null);
 
-        // 共享式：实例只是 (版本 + 设置) 的引用，不创建独立目录。
-        // 游戏文件（versions/<id>/ 与共享的 libraries/、assets/）由安装器写入 _rootDir。
         var instance = new GameInstance
         {
-            Id = id,
-            Name = name,
-            MinecraftVersion = version.Id,
+            Id = MakeId(instanceName),
+            // MinecraftVersion is intentionally the versions/<name>/ folder, not necessarily Mojang's id.
+            MinecraftVersion = instanceName,
+            BaseMinecraftVersion = version.Id,
             Loader = loader,
             Path = _rootDir,
         };
@@ -63,11 +62,43 @@ public sealed class JsonInstanceRepository : IInstanceRepository
         return Task.CompletedTask;
     }
 
+    public Task RenameAsync(GameInstance instance, string newName, CancellationToken ct = default)
+    {
+        var targetName = ValidateInstanceName(newName);
+        if (string.Equals(instance.MinecraftVersion, targetName, StringComparison.Ordinal))
+            return Task.CompletedTask;
+        EnsureNameAvailable(targetName, except: instance);
+
+        var oldName = instance.MinecraftVersion;
+        var versionsDir = Path.Combine(instance.Path, "versions");
+        var oldDir = Path.Combine(versionsDir, oldName);
+        var newDir = Path.Combine(versionsDir, targetName);
+
+        if (Directory.Exists(newDir))
+            throw new IOException($"Version folder already exists: {newDir}");
+
+        if (Directory.Exists(oldDir))
+        {
+            // Rename files inside first, while paths are simple and still under the old directory.
+            RenameIfExists(Path.Combine(oldDir, oldName + ".jar"), Path.Combine(oldDir, targetName + ".jar"));
+            RenameIfExists(Path.Combine(oldDir, oldName + ".json"), Path.Combine(oldDir, targetName + ".json"));
+            Directory.Move(oldDir, newDir);
+        }
+        else
+        {
+            DebugLog.Warn($"Instances: version folder missing during rename: {oldDir}; updating metadata only.");
+        }
+
+        instance.MinecraftVersion = targetName;
+        Save();
+        return Task.CompletedTask;
+    }
+
     public Task DeleteAsync(GameInstance instance, CancellationToken ct = default)
     {
         _instances.RemoveAll(x => x.Id == instance.Id);
 
-        // 只删该版本的核心文件（versions/<version>/）；libraries/、assets/ 跨版本共享，不动。
+        // 实例名绑定到版本目录名；移除实例即移除 versions/<name>/。
         var versionDir = Path.Combine(instance.Path, "versions", instance.MinecraftVersion);
         if (Directory.Exists(versionDir))
             Directory.Delete(versionDir, recursive: true);
@@ -82,7 +113,14 @@ public sealed class JsonInstanceRepository : IInstanceRepository
         {
             if (!File.Exists(_file)) return new List<GameInstance>();
             var json = File.ReadAllText(_file);
-            return JsonSerializer.Deserialize<List<GameInstance>>(json, JsonOptions) ?? new List<GameInstance>();
+            var loaded = JsonSerializer.Deserialize<List<GameInstance>>(json, JsonOptions) ?? new List<GameInstance>();
+            foreach (var i in loaded)
+            {
+                // Migration for older instances: before this change MinecraftVersion was Mojang's id and no
+                // BaseMinecraftVersion existed, so treat the old value as both folder/name and base version.
+                if (string.IsNullOrWhiteSpace(i.BaseMinecraftVersion)) i.BaseMinecraftVersion = i.MinecraftVersion;
+            }
+            return loaded;
         }
         catch (Exception ex)
         {
@@ -103,6 +141,32 @@ public sealed class JsonInstanceRepository : IInstanceRepository
         var tmp = _file + ".tmp";
         File.WriteAllText(tmp, json);
         File.Move(tmp, _file, overwrite: true);
+    }
+
+    private static string ValidateInstanceName(string name)
+    {
+        var trimmed = name.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            throw new ArgumentException("Instance name must not be empty.", nameof(name));
+        if (trimmed.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            throw new ArgumentException("Instance name contains characters that can't be used in a folder name.", nameof(name));
+        if (trimmed is "." or "..")
+            throw new ArgumentException("Instance name can't be '.' or '..'.", nameof(name));
+        return trimmed;
+    }
+
+    private void EnsureNameAvailable(string name, GameInstance? except)
+    {
+        if (_instances.Any(i => !ReferenceEquals(i, except)
+                               && string.Equals(i.MinecraftVersion, name, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException($"An instance named '{name}' already exists.");
+    }
+
+    private static void RenameIfExists(string oldPath, string newPath)
+    {
+        if (!File.Exists(oldPath)) return;
+        if (File.Exists(newPath)) throw new IOException($"Target file already exists: {newPath}");
+        File.Move(oldPath, newPath);
     }
 
     private static string MakeId(string name)

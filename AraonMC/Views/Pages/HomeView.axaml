@@ -68,7 +68,7 @@
                 <!-- Version line -->
                 <StackPanel Grid.Row="1" Margin="24,18,24,2">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="{Binding SelectedInstance.MinecraftVersion}" FontWeight="SemiBold"
+                        <TextBlock Text="{Binding SelectedInstance.DisplayVersion}" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextPrimaryBrush}"/>
                         <TextBlock Text="·" Foreground="{DynamicResource TextMutedBrush}"/>
                         <TextBlock Text="{Binding SelectedInstance.DisplayLoader}"

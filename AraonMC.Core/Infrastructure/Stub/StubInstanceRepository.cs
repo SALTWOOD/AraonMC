@@ -6,7 +6,7 @@ namespace AraonMC.Core.Infrastructure.Stub;
 
 /// <summary>
 /// Stub <see cref="IInstanceRepository"/>. Returns hardcoded mock instances so the UI is populated.
-/// Create / Save / Delete throw <see cref="NotImplementedException"/> — real backend pending.
+/// Create / Save / Rename / Delete throw <see cref="NotImplementedException"/> — real backend pending.
 /// </summary>
 public sealed class StubInstanceRepository : IInstanceRepository
 {
@@ -15,8 +15,8 @@ public sealed class StubInstanceRepository : IInstanceRepository
         new()
         {
             Id = "vanilla-1.21.4",
-            Name = "Vanilla 1.21.4",
-            MinecraftVersion = "1.21.4",
+            MinecraftVersion = "Vanilla 1.21.4",   // instance name / versions folder name
+            BaseMinecraftVersion = "1.21.4",       // real Mojang version
             Loader = LoaderType.Vanilla,
             LoaderVersion = "",
             CoverKey = "V",
@@ -27,8 +27,8 @@ public sealed class StubInstanceRepository : IInstanceRepository
         new()
         {
             Id = "atm10",
-            Name = "All The Mods 10",
-            MinecraftVersion = "1.21.4",
+            MinecraftVersion = "All The Mods 10",
+            BaseMinecraftVersion = "1.21.4",
             Loader = LoaderType.NeoForge,
             LoaderVersion = "21.4.30",
             CoverKey = "A",
@@ -39,8 +39,8 @@ public sealed class StubInstanceRepository : IInstanceRepository
         new()
         {
             Id = "cobblemon",
-            Name = "Cobblemon",
-            MinecraftVersion = "1.21.1",
+            MinecraftVersion = "Cobblemon",
+            BaseMinecraftVersion = "1.21.1",
             Loader = LoaderType.Fabric,
             LoaderVersion = "0.16.10",
             CoverKey = "C",
@@ -51,8 +51,8 @@ public sealed class StubInstanceRepository : IInstanceRepository
         new()
         {
             Id = "speedrun-1.16.5",
-            Name = "Speedrun 1.16.5",
-            MinecraftVersion = "1.16.5",
+            MinecraftVersion = "Speedrun 1.16.5",
+            BaseMinecraftVersion = "1.16.5",
             Loader = LoaderType.Fabric,
             LoaderVersion = "0.11.7",
             CoverKey = "R",
@@ -69,6 +69,9 @@ public sealed class StubInstanceRepository : IInstanceRepository
 
     public Task SaveAsync(GameInstance instance, CancellationToken ct = default) =>
         throw new NotImplementedException("Instance persistence backend is not implemented yet.");
+
+    public Task RenameAsync(GameInstance instance, string newName, CancellationToken ct = default) =>
+        throw new NotImplementedException("Instance rename backend is not implemented yet.");
 
     public Task DeleteAsync(GameInstance instance, CancellationToken ct = default) =>
         throw new NotImplementedException("Instance deletion backend is not implemented yet.");

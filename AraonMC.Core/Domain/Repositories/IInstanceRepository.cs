@@ -13,5 +13,6 @@ public interface IInstanceRepository
 
     Task<GameInstance> CreateAsync(string name, MinecraftVersion version, LoaderType loader, CancellationToken ct = default);
     Task SaveAsync(GameInstance instance, CancellationToken ct = default);
+    Task RenameAsync(GameInstance instance, string newName, CancellationToken ct = default);
     Task DeleteAsync(GameInstance instance, CancellationToken ct = default);
 }

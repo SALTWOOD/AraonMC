@@ -41,7 +41,7 @@ public sealed class TokenContext
             .Set("natives_directory", c.NativesDirectory)
             .Set("launcher_name", c.LauncherName)
             .Set("launcher_version", c.LauncherVersion)
-            .Set("classpath_separator", System.IO.Path.PathSeparator.ToString())
+            .Set("classpath_separator", Path.PathSeparator.ToString())
             .Set("library_directory", c.LibrariesDirectory)
             .Set("client_jar", c.ClientJarPath);
 

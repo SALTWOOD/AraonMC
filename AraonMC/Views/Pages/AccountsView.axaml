@@ -60,7 +60,9 @@
             <Button Classes="accent" Command="{Binding AddMicrosoftCommand}" Padding="16,9">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Path Width="14" Height="14" Stretch="Uniform"
-                          Fill="{DynamicResource AccentForegroundBrush}" Stroke="Transparent"
+                          Stroke="{DynamicResource AccentForegroundBrush}" StrokeThickness="2"
+                          StrokeLineCap="Round" StrokeJoin="Round"
+                          Fill="Transparent"
                           Data="{StaticResource external-link}"/>
                     <TextBlock Text="Add Microsoft" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </StackPanel>

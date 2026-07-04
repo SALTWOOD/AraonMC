@@ -12,33 +12,58 @@ public enum DownloadStatus
     Cancelled,
 }
 
-/// <summary>一个可观测的下载任务（安装一个版本到某实例目录）。</summary>
+/// <summary>
+/// An observable download/install job shown on the Downloads page. Backs two kinds of work:
+/// <list type="bullet">
+/// <item>Minecraft version installs — file-count progress via <see cref="Apply"/> (<see cref="Detail"/> is the version id).</item>
+/// <item>Generic file downloads (mods / resource packs / …) — byte progress via <see cref="ReportBytes"/>
+/// (<see cref="Detail"/> is the destination filename).</item>
+/// </list>
+/// </summary>
 public partial class DownloadJob : ObservableObject
 {
     public string Id { get; } = Guid.NewGuid().ToString("N");
     public string Title { get; }
-    public string VersionId { get; }
+
+    /// <summary>Subtitle line: a Minecraft version id (installs) or the destination filename (file downloads).</summary>
+    public string Detail { get; }
+
+    /// <summary>Instance path for Minecraft installs; empty for generic file downloads.</summary>
     public string InstancePath { get; }
+
+    /// <summary>Absolute destination path for generic file downloads; null for Minecraft installs.</summary>
+    public string? DestinationPath { get; init; }
+
     public CancellationTokenSource Cts { get; } = new();
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsCancellable))] private DownloadStatus _status = DownloadStatus.Queued;
     [ObservableProperty] private double _progressPercent;
 
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private int _filesDone;
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(BytesText))] private int _filesTotal;
+    // File-count progress (Minecraft installs).
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(ProgressText))] private int _filesDone;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(ProgressText))] private int _filesTotal;
+
+    // Byte progress (generic file downloads); BytesTotal &lt; 0 means "unknown length".
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(ProgressText))] private long _bytesDone;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(ProgressText))] private long _bytesTotal;
+
     [ObservableProperty] private string? _errorMessage;
 
     /// <summary>是否仍可取消（运行/排队中）。</summary>
     public bool IsCancellable => Status is DownloadStatus.Running or DownloadStatus.Queued;
 
-    /// <summary>上游只提供文件计数进度，故以“已完成/总文件数”展示。</summary>
-    public string BytesText => FilesTotal > 0 ? $"{FilesDone} / {FilesTotal} files" : "—";
+    /// <summary>Human-readable progress: byte transfer for file downloads, file count for installs.</summary>
+    public string ProgressText =>
+        BytesTotal > 0 ? $"{Fmt(BytesDone)} / {Fmt(BytesTotal)}"
+        : BytesTotal < 0 ? $"{Fmt(BytesDone)}"
+        : FilesTotal > 0 ? $"{FilesDone} / {FilesTotal} files"
+        : "—";
 
-    public DownloadJob(string title, string versionId, string instancePath)
+    public DownloadJob(string title, string detail, string instancePath = "")
     {
         Title = title;
-        VersionId = versionId;
-        InstancePath = instancePath;
+        Detail = detail;
+        InstancePath = instancePath ?? string.Empty;
     }
 
     /// <summary>从上游 <see cref="DownloadProgress"/>（文件计数）同步进度字段。</summary>
@@ -48,4 +73,19 @@ public partial class DownloadJob : ObservableObject
         FilesTotal = p.Total;
         ProgressPercent = p.Total > 0 ? p.Completed * 100.0 / p.Total : ProgressPercent;
     }
+
+    /// <summary>Syncs byte progress for a generic file download. Pass <paramref name="total"/> &lt; 0 when unknown.</summary>
+    public void ReportBytes(long done, long total)
+    {
+        BytesDone = done;
+        BytesTotal = total;
+        ProgressPercent = total > 0 ? done * 100.0 / total : ProgressPercent;
+    }
+
+    private static string Fmt(long bytes) => bytes switch
+    {
+        >= 1L << 20 => $"{bytes / (double)(1L << 20):0.#} MB",
+        >= 1L << 10 => $"{bytes / (double)(1L << 10):0.#} KB",
+        _ => $"{bytes} B",
+    };
 }
