@@ -4,6 +4,7 @@
              xmlns:models="using:AraonMC.Core.Domain.Entities"
              xmlns:conv="using:AraonMC.Converters"
              xmlns:ctrl="using:AraonMC.Controls"
+             xmlns:behaviors="using:AraonMC.Behaviors"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="640"
@@ -14,8 +15,8 @@
         <DataTemplate x:Key="ResourceCardTemplate" DataType="models:ResourceInfo">
             <Border Classes="card" Padding="16"
                     RenderTransformOrigin="50%,50%"
-                    PointerPressed="ResourceCard_PointerPressed"
-                    PointerReleased="ResourceCard_PointerReleased">
+                    behaviors:CardBehavior.ReleaseCommand="{Binding $parent[UserControl].((pages:BrowseViewModel)DataContext).DetailCommand}"
+                    behaviors:CardBehavior.ReleaseCommandParameter="{Binding}">
                 <StackPanel>
                     <!-- Header: icon + name/author + open-page button -->
                     <Grid ColumnDefinitions="44,*,28">
