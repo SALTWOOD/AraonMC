@@ -160,19 +160,23 @@
                                        Opacity="0.7"/>
 
                             <!-- Chevron: size-5, text-secondary -->
-                            <Path Name="PART_Chevron"
+                            <Grid Name="PART_ChevronContainer"
                                   Grid.Column="1"
-                                  Width="20" Height="20"
-                                  Stretch="Uniform"
-                                  Fill="Transparent"
-                                  Stroke="{DynamicResource TextSecondaryBrush}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Margin="10,0,0,0"
-                                  HorizontalAlignment="Center"
+                                  Width="15" Height="15"
                                   VerticalAlignment="Center"
-                                  Data="M6,9 L12,15 L18,9"/>
+                                  Margin="10,0,0,0"
+                                  RenderTransformOrigin="50%, 50%">
+                                <Path Name="PART_Chevron"
+                                      Stretch="Uniform"
+                                      Fill="Transparent"
+                                      Stroke="{DynamicResource TextSecondaryBrush}"
+                                      StrokeThickness="2"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Data="M6,9 L12,15 L18,9"/>
+                            </Grid>
                         </Grid>
                     </Border>
 

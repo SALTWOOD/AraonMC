@@ -7,11 +7,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
-using System;
 using System.Collections;
 using System.Reflection;
-
-using Shapes = Avalonia.Controls.Shapes;
 
 namespace AraonMC.Controls;
 
@@ -19,7 +16,7 @@ public class Combox : TemplatedControl
 {
     private Border? _border;
     private TextBlock? _selectedText;
-    private Shapes.Path? _chevron;
+    private Grid? _chevronContainer;
     private Popup? _popup;
     private Border? _dropdownBorder;
     private ListBox? _listBox;
@@ -83,15 +80,15 @@ public class Combox : TemplatedControl
 
         _border = e.NameScope.Find<Border>("PART_Border");
         _selectedText = e.NameScope.Find<TextBlock>("PART_SelectedText");
-        _chevron = e.NameScope.Find<Shapes.Path>("PART_Chevron");
+        _chevronContainer = e.NameScope.Find<Grid>("PART_ChevronContainer");
         _popup = e.NameScope.Find<Popup>("PART_Popup");
         _dropdownBorder = e.NameScope.Find<Border>("PART_DropdownBorder");
         _listBox = e.NameScope.Find<ListBox>("PART_ListBox");
 
-        if (_chevron != null)
+        if (_chevronContainer != null)
         {
-            _rotate = new RotateTransform(0) { CenterX = 10, CenterY = 10 };
-            _chevron.RenderTransform = _rotate;
+            _rotate = new RotateTransform(0);
+            _chevronContainer.RenderTransform = _rotate;
         }
 
         Subscribe();
