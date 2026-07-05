@@ -61,6 +61,9 @@
         <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}"/>
         <Setter Property="CornerRadius" Value="14"/>
     </Style>
+    <Style Selector="Button.icon:pointerover Path">
+        <Setter Property="Stroke" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
 
     <!-- Chrome window buttons -->
     <Style Selector="Button.chrome">
