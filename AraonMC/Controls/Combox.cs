@@ -21,6 +21,7 @@ public class Combox : TemplatedControl
     private Border? _dropdownBorder;
     private ListBox? _listBox;
     private RotateTransform? _rotate;
+    private TopLevel? _topLevel;
     private DispatcherTimer? _animTimer;
     private DispatcherTimer? _fadeTimer;
 
@@ -101,17 +102,30 @@ public class Combox : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var tl = TopLevel.GetTopLevel(this);
-        if (tl != null)
-            tl.AddHandler(PointerPressedEvent, OnRootPointerPressed, RoutingStrategies.Tunnel);
+        _topLevel = TopLevel.GetTopLevel(this);
+        if (_topLevel != null)
+        {
+            _topLevel.AddHandler(PointerPressedEvent, OnRootPointerPressed, RoutingStrategies.Tunnel);
+            if (_topLevel is Window w)
+                w.Deactivated += OnWindowDeactivated;
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        var tl = TopLevel.GetTopLevel(this);
-        if (tl != null)
-            tl.RemoveHandler(PointerPressedEvent, OnRootPointerPressed);
+        if (_topLevel != null)
+        {
+            _topLevel.RemoveHandler(PointerPressedEvent, OnRootPointerPressed);
+            if (_topLevel is Window w)
+                w.Deactivated -= OnWindowDeactivated;
+            _topLevel = null;
+        }
+    }
+
+    private void OnWindowDeactivated(object? sender, EventArgs e)
+    {
+        IsDropDownOpen = false;
     }
 
     private void OnRootPointerPressed(object? sender, PointerPressedEventArgs e)
