@@ -6,7 +6,7 @@
     <Grid>
         <Border Name="SearchBorder"
                 Background="{DynamicResource SurfaceBrush}"
-                CornerRadius="12" Height="48" Margin="3"
+                CornerRadius="12" Height="48"
                 BorderThickness="0">
             <Grid>
                 <StackPanel Orientation="Horizontal" Spacing="8"
