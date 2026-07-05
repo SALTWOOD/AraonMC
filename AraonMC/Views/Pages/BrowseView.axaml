@@ -12,7 +12,8 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="ResourceCardTemplate" DataType="models:ResourceInfo">
-            <Border Classes="card" Padding="16">
+            <Border Classes="card" Padding="16"
+                    PointerPressed="ResourceCard_PointerPressed">
                 <StackPanel>
                     <!-- Header: icon + name/author + open-page button -->
                     <Grid ColumnDefinitions="44,*,28">
@@ -68,23 +69,6 @@
                     <TextBlock Text="{Binding Downloads, Converter={x:Static conv:CompactNumberConverter.Instance}}"
                                FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,6,0,0"/>
 
-                    <!-- Actions: Detail opens the version-select window (always available — any version can be re-downloaded). -->
-                    <Grid ColumnDefinitions="*" Margin="0,14,0,0">
-                        <Button Grid.Column="0" Classes="accent"
-                                Command="{Binding $parent[UserControl].((pages:BrowseViewModel)DataContext).DetailCommand}"
-                                CommandParameter="{Binding}"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Center" Padding="0,9">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Path Width="13" Height="13" Stretch="Uniform"
-                                      Stroke="{DynamicResource AccentForegroundBrush}" StrokeThickness="2"
-                                      StrokeLineCap="Round" StrokeJoin="Round"
-                                      Fill="Transparent"
-                                      Data="{StaticResource info}"/>
-                                <TextBlock Text="Detail" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </Grid>
                 </StackPanel>
             </Border>
         </DataTemplate>

@@ -108,6 +108,9 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{StaticResource LargeCornerRadius}"/>
     </Style>
+    <Style Selector="Border.card:pointerover">
+        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}"/>
+    </Style>
     <Style Selector="Border.divider">
         <Setter Property="Background" Value="{StaticResource BorderSoftBrush}"/>
         <Setter Property="Height" Value="1"/>
