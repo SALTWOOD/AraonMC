@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="using:AraonMC.Controls">
 
     <!-- Primary amber button (PLAY / confirm) -->
     <Style Selector="Button.accent">
@@ -126,6 +127,115 @@
     </Style>
     <Style Selector="ScrollBar.horizontal">
         <Setter Property="Height" Value="10"/>
+    </Style>
+
+    <!-- ============================== -->
+    <!--  Combox  (Modrinth-style combobox)  -->
+    <!-- ============================== -->
+    <Style Selector="ctrl|Combox">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="Template">
+            <ControlTemplate TargetType="ctrl:Combox">
+                <Grid Name="PART_Root">
+                    <!-- Trigger button: rounded-xl, bg-surface-4, px-4 py-2, gap-2.5 -->
+                    <Border Name="PART_Border"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="12"
+                            Padding="16,7"
+                            MinHeight="36"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <!-- Selected text or placeholder -->
+                            <TextBlock Name="PART_SelectedText"
+                                       Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       TextTrimming="CharacterEllipsis"
+                                       FontSize="13"
+                                       FontWeight="Medium"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Opacity="0.7"/>
+
+                            <!-- Chevron: size-5, text-secondary -->
+                            <Path Name="PART_Chevron"
+                                  Grid.Column="1"
+                                  Width="20" Height="20"
+                                  Stretch="Uniform"
+                                  Fill="Transparent"
+                                  Stroke="{DynamicResource TextSecondaryBrush}"
+                                  StrokeThickness="2"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Margin="10,0,0,0"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Data="M6,9 L12,15 L18,9"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Dropdown Popup -->
+                    <Popup Name="PART_Popup"
+                           Placement="Bottom"
+                           HorizontalOffset="0"
+                           VerticalOffset="8"
+                           PlacementTarget="{TemplateBinding}">
+                        <Border Name="PART_DropdownBorder"
+                                Background="{DynamicResource SurfaceBrush}"
+                                CornerRadius="14"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                Padding="0"
+                                MaxHeight="300"
+                                UseLayoutRounding="True"
+                                BoxShadow="0 25 50 -12 rgba(0,0,0,0.35)">
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ListBox Name="PART_ListBox"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Padding="4"
+                                         ItemsSource="{TemplateBinding ItemsSource}"
+                                         SelectedItem="{TemplateBinding SelectedItem}"
+                                         ItemTemplate="{TemplateBinding ItemTemplate}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                         Focusable="False">
+                                    <ListBox.Styles>
+                                        <!-- Modrinth-style ListBoxItem -->
+                                        <Style Selector="ListBoxItem">
+                                            <Setter Property="Padding" Value="16,11"/>
+                                            <Setter Property="Margin" Value="0"/>
+                                            <Setter Property="MinHeight" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                            <Setter Property="CornerRadius" Value="10"/>
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="{DynamicResource AccentTintBrush}"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:selected">
+                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:focusvisual">
+                                            <Setter Property="IsVisible" Value="False"/>
+                                        </Style>
+                                    </ListBox.Styles>
+                                </ListBox>
+                            </ScrollViewer>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
     </Style>
 
 </Styles>
