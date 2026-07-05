@@ -1,8 +1,8 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:ctrl="using:AraonMC.Controls"
+             xmlns:controls="using:AraonMC.Controls"
              x:Class="AraonMC.Controls.SearchBox"
-             x:DataType="ctrl:SearchBox">
+             x:DataType="controls:SearchBox">
     <Grid>
         <Border Name="SearchBorder"
                 Background="{DynamicResource SurfaceBrush}"
@@ -16,8 +16,8 @@
                           Data="{StaticResource search}"
                           IsHitTestVisible="False" Opacity="0.6" Margin="16,0,0,0"/>
                     <TextBox Name="SearchTextBox"
-                             Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=ctrl:SearchBox}}"
-                             Watermark="{Binding WatermarkText, RelativeSource={RelativeSource AncestorType=ctrl:SearchBox}}"
+                             Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
+                             Watermark="{Binding WatermarkText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
                              Background="Transparent" BorderThickness="0"
                              Foreground="{DynamicResource TextPrimaryBrush}"
                              CaretBrush="{DynamicResource AccentBrush}"

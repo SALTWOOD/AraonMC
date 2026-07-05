@@ -12,7 +12,7 @@ using System.Reflection;
 
 namespace AraonMC.Controls;
 
-public class Combox : TemplatedControl
+public class ComboBox : TemplatedControl
 {
     private Border? _border;
     private TextBlock? _selectedText;
@@ -26,20 +26,20 @@ public class Combox : TemplatedControl
     private DispatcherTimer? _fadeTimer;
 
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
-        AvaloniaProperty.Register<Combox, IEnumerable?>(nameof(ItemsSource));
+        AvaloniaProperty.Register<ComboBox, IEnumerable?>(nameof(ItemsSource));
 
     public static readonly StyledProperty<object?> SelectedItemProperty =
-        AvaloniaProperty.Register<Combox, object?>(nameof(SelectedItem),
+        AvaloniaProperty.Register<ComboBox, object?>(nameof(SelectedItem),
             defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly StyledProperty<string?> PlaceholderTextProperty =
-        AvaloniaProperty.Register<Combox, string?>(nameof(PlaceholderText), defaultValue: "Select...");
+        AvaloniaProperty.Register<ComboBox, string?>(nameof(PlaceholderText), defaultValue: "Select...");
 
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
-        AvaloniaProperty.Register<Combox, bool>(nameof(IsDropDownOpen));
+        AvaloniaProperty.Register<ComboBox, bool>(nameof(IsDropDownOpen));
 
     public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
-        AvaloniaProperty.Register<Combox, IDataTemplate?>(nameof(ItemTemplate));
+        AvaloniaProperty.Register<ComboBox, IDataTemplate?>(nameof(ItemTemplate));
 
     public IEnumerable? ItemsSource
     {

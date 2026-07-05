@@ -1,6 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ctrl="using:AraonMC.Controls">
+        xmlns:controls="using:AraonMC.Controls">
 
     <!-- Primary amber button (PLAY / confirm) -->
     <Style Selector="Button.accent">
@@ -136,14 +136,14 @@
     </Style>
 
     <!-- ============================== -->
-    <!--  Combox  (Modrinth-style combobox)  -->
+    <!--  ComboBox -->
     <!-- ============================== -->
-    <Style Selector="ctrl|Combox">
+    <Style Selector="controls|ComboBox">
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
         <Setter Property="MinHeight" Value="36"/>
         <Setter Property="Template">
-            <ControlTemplate TargetType="ctrl:Combox">
+            <ControlTemplate TargetType="controls:ComboBox">
                 <Grid Name="PART_Root">
                     <!-- Trigger button: rounded-xl, bg-surface-4, px-4 py-2, gap-2.5 -->
                     <Border Name="PART_Border"
@@ -213,7 +213,6 @@
                                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                          Focusable="False">
                                     <ListBox.Styles>
-                                        <!-- Modrinth-style ListBoxItem -->
                                         <Style Selector="ListBoxItem">
                                             <Setter Property="Padding" Value="16,11"/>
                                             <Setter Property="Margin" Value="0"/>

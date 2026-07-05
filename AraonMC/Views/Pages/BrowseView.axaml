@@ -3,7 +3,7 @@
              xmlns:pages="using:AraonMC.ViewModels.Pages"
              xmlns:models="using:AraonMC.Core.Domain.Entities"
              xmlns:conv="using:AraonMC.Converters"
-             xmlns:ctrl="using:AraonMC.Controls"
+             xmlns:controls="using:AraonMC.Controls"
              xmlns:behaviors="using:AraonMC.Behaviors"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -28,7 +28,7 @@
                                            Foreground="{DynamicResource AccentForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <!-- Layered on top: transparent until the bitmap loads -->
-                                <ctrl:RemoteImage Url="{Binding IconUrl}" Stretch="UniformToFill"/>
+                                <controls:RemoteImage Url="{Binding IconUrl}" Stretch="UniformToFill"/>
                             </Panel>
                         </Border>
                         <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2" VerticalAlignment="Center">
@@ -79,7 +79,7 @@
 
     <Grid Margin="28,8,28,28" RowDefinitions="Auto,Auto,Auto,*">
         <!-- Row 0: search box (full width) -->
-        <ctrl:SearchBox SearchText="{Binding SearchText}" Margin="0,0,0,14"/>
+        <controls:SearchBox SearchText="{Binding SearchText}" Margin="0,0,0,14"/>
 
         <!-- Row 1: resource-type chips (centered) -->
         <ListBox Grid.Row="1" ItemsSource="{Binding ResourceTypes}"
@@ -120,34 +120,34 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <!-- Row 2: filters (Combox) -->
+        <!-- Row 2: filters (ComboBox) -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="12" Margin="0,12,0,16">
-            <ctrl:Combox ItemsSource="{Binding Sources}" SelectedItem="{Binding SelectedSourceOption}"
+            <controls:ComboBox ItemsSource="{Binding Sources}" SelectedItem="{Binding SelectedSourceOption}"
                          MinWidth="140" PlaceholderText="Source">
-                <ctrl:Combox.ItemTemplate>
+                <controls:ComboBox.ItemTemplate>
                     <DataTemplate x:CompileBindings="False">
                         <TextBlock Text="{Binding Label}" FontSize="13" FontWeight="SemiBold"/>
                     </DataTemplate>
-                </ctrl:Combox.ItemTemplate>
-            </ctrl:Combox>
-            <ctrl:Combox ItemsSource="{Binding Loaders}" SelectedItem="{Binding SelectedLoaderOption}"
+                </controls:ComboBox.ItemTemplate>
+            </controls:ComboBox>
+            <controls:ComboBox ItemsSource="{Binding Loaders}" SelectedItem="{Binding SelectedLoaderOption}"
                          MinWidth="150" PlaceholderText="Loader">
-                <ctrl:Combox.ItemTemplate>
+                <controls:ComboBox.ItemTemplate>
                     <DataTemplate x:CompileBindings="False">
                         <TextBlock Text="{Binding Label}" FontSize="13" FontWeight="SemiBold"/>
                     </DataTemplate>
-                </ctrl:Combox.ItemTemplate>
-            </ctrl:Combox>
+                </controls:ComboBox.ItemTemplate>
+            </controls:ComboBox>
             <TextBox Classes="field" Text="{Binding GameVersion}" Watermark="Version (e.g. 1.20.1)"
                      MinWidth="150"/>
-            <ctrl:Combox ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSortOption}"
+            <controls:ComboBox ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSortOption}"
                          MinWidth="160" PlaceholderText="Sort by">
-                <ctrl:Combox.ItemTemplate>
+                <controls:ComboBox.ItemTemplate>
                     <DataTemplate x:CompileBindings="False">
                         <TextBlock Text="{Binding Label}" FontSize="13" FontWeight="SemiBold"/>
                     </DataTemplate>
-                </ctrl:Combox.ItemTemplate>
-            </ctrl:Combox>
+                </controls:ComboBox.ItemTemplate>
+            </controls:ComboBox>
             <ProgressBar IsVisible="{Binding IsBusy}" IsIndeterminate="True"
                          Width="80" Height="3" VerticalAlignment="Center"
                          Foreground="{DynamicResource AccentBrush}"/>
@@ -159,7 +159,7 @@
                 <ItemsControl ItemsSource="{Binding Items}" ItemTemplate="{StaticResource ResourceCardTemplate}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ctrl:WaterfallPanel ColumnWidth="300" ColumnSpacing="18" RowSpacing="18"/>
+                            <controls:WaterfallPanel ColumnWidth="300" ColumnSpacing="18" RowSpacing="18"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
