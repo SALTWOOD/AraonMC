@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:AraonMC.Controls">
 
     <!-- Primary amber button (PLAY / confirm) -->
     <Style Selector="Button.accent">
@@ -60,6 +61,9 @@
         <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}"/>
         <Setter Property="CornerRadius" Value="14"/>
     </Style>
+    <Style Selector="Button.icon:pointerover Path">
+        <Setter Property="Stroke" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
 
     <!-- Chrome window buttons -->
     <Style Selector="Button.chrome">
@@ -107,6 +111,9 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{StaticResource LargeCornerRadius}"/>
     </Style>
+    <Style Selector="Border.card:pointerover">
+        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}"/>
+    </Style>
     <Style Selector="Border.divider">
         <Setter Property="Background" Value="{StaticResource BorderSoftBrush}"/>
         <Setter Property="Height" Value="1"/>
@@ -126,6 +133,117 @@
     </Style>
     <Style Selector="ScrollBar.horizontal">
         <Setter Property="Height" Value="10"/>
+    </Style>
+
+    <!-- ============================== -->
+    <!--  ComboBox -->
+    <!-- ============================== -->
+    <Style Selector="controls|ComboBox">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="Template">
+            <ControlTemplate TargetType="controls:ComboBox">
+                <Grid Name="PART_Root">
+                    <!-- Trigger button: rounded-xl, bg-surface-4, px-4 py-2, gap-2.5 -->
+                    <Border Name="PART_Border"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="12"
+                            Padding="16,7"
+                            MinHeight="36"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <!-- Selected text or placeholder -->
+                            <TextBlock Name="PART_SelectedText"
+                                       Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       TextTrimming="CharacterEllipsis"
+                                       FontSize="13"
+                                       FontWeight="Medium"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Opacity="0.7"/>
+
+                            <!-- Chevron: size-5, text-secondary -->
+                            <Grid Name="PART_ChevronContainer"
+                                  Grid.Column="1"
+                                  Width="15" Height="15"
+                                  VerticalAlignment="Center"
+                                  Margin="10,0,0,0"
+                                  RenderTransformOrigin="50%, 50%">
+                                <Path Name="PART_Chevron"
+                                      Stretch="Uniform"
+                                      Fill="Transparent"
+                                      Stroke="{DynamicResource TextSecondaryBrush}"
+                                      StrokeThickness="2"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Data="M6,9 L12,15 L18,9"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!-- Dropdown Popup -->
+                    <Popup Name="PART_Popup"
+                           Placement="Bottom"
+                           HorizontalOffset="0"
+                           VerticalOffset="8"
+                           PlacementTarget="{TemplateBinding}">
+                        <Border Name="PART_DropdownBorder"
+                                Background="{DynamicResource SurfaceBrush}"
+                                CornerRadius="14"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                Padding="0"
+                                MaxHeight="300"
+                                UseLayoutRounding="True">
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ListBox Name="PART_ListBox"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Padding="4"
+                                         ItemsSource="{TemplateBinding ItemsSource}"
+                                         SelectedItem="{TemplateBinding SelectedItem}"
+                                         ItemTemplate="{TemplateBinding ItemTemplate}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                         Focusable="False">
+                                    <ListBox.Styles>
+                                        <Style Selector="ListBoxItem">
+                                            <Setter Property="Padding" Value="16,11"/>
+                                            <Setter Property="Margin" Value="0"/>
+                                            <Setter Property="MinHeight" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                            <Setter Property="CornerRadius" Value="10"/>
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="{DynamicResource AccentTintBrush}"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:selected">
+                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:focusvisual">
+                                            <Setter Property="IsVisible" Value="False"/>
+                                        </Style>
+                                    </ListBox.Styles>
+                                </ListBox>
+                            </ScrollViewer>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
     </Style>
 
 </Styles>
