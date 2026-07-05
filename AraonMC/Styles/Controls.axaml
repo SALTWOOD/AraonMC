@@ -193,8 +193,7 @@
                                 BorderThickness="1"
                                 Padding="0"
                                 MaxHeight="300"
-                                UseLayoutRounding="True"
-                                BoxShadow="0 25 50 -12 rgba(0,0,0,0.35)">
+                                UseLayoutRounding="True">
                             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                           VerticalScrollBarVisibility="Auto">
                                 <ListBox Name="PART_ListBox"
