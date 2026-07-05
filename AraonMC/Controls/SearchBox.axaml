@@ -17,7 +17,7 @@
                           IsHitTestVisible="False" Opacity="0.6" Margin="16,0,0,0"/>
                     <TextBox Name="SearchTextBox"
                              Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
-                             Watermark="{Binding WatermarkText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
+                             PlaceholderText="{Binding WatermarkText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
                              Background="Transparent" BorderThickness="0"
                              Foreground="{DynamicResource TextPrimaryBrush}"
                              CaretBrush="{DynamicResource AccentBrush}"

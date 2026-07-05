@@ -138,7 +138,7 @@
                     </DataTemplate>
                 </controls:ComboBox.ItemTemplate>
             </controls:ComboBox>
-            <TextBox Classes="field" Text="{Binding GameVersion}" Watermark="Version (e.g. 1.20.1)"
+            <TextBox Classes="field" Text="{Binding GameVersion}" PlaceholderText="Version (e.g. 1.20.1)"
                      MinWidth="150"/>
             <controls:ComboBox ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSortOption}"
                          MinWidth="160" PlaceholderText="Sort by">

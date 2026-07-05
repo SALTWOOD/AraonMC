@@ -18,7 +18,7 @@ public partial class InputDialog : Window
     {
         InitializeComponent();
         DialogTitle.Text = title;
-        InputBox.Watermark = placeholder;
+        InputBox.PlaceholderText = placeholder;
         InputBox.Text = defaultValue;
     }
 

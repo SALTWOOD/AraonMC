@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BackgroundBrush}"
         ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="NoChrome"
+        WindowDecorations="None"
         ExtendClientAreaTitleBarHeightHint="-1">
 
     <Window.Resources>

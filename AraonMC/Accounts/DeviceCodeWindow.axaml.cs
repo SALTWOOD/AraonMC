@@ -3,6 +3,7 @@ using System.Diagnostics;
 using AraonMC.Auth;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 
 namespace AraonMC.Accounts;
