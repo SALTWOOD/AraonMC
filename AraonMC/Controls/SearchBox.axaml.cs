@@ -108,7 +108,7 @@ public partial class SearchBox : UserControl
             source = source.Parent as Visual;
         }
 
-        TopLevel.GetTopLevel(this)?.FocusManager?.Focus(null, NavigationMethod.Unspecified, KeyModifiers.None);
+        TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
     }
 
     private void OnTextChanged(object? sender, TextChangedEventArgs e)

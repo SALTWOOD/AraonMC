@@ -12,7 +12,7 @@
         Background="Transparent"
         TransparencyBackgroundFallback="#FF252538"
         ExtendClientAreaToDecorationsHint="True"
-        WindowDecorations="None"
+        ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
         WindowStartupLocation="CenterOwner">
 

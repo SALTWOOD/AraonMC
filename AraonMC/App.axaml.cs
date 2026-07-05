@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System;
-using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Markup.Xaml;
@@ -119,18 +118,14 @@ public partial class App : Application
 
     private void DisableAvaloniaDataAnnotationValidation()
     {
-        var bindingPluginsType = typeof(DataAnnotationsValidationPlugin).Assembly
-            .GetType("Avalonia.Data.Core.Plugins.BindingPlugins");
-        if (bindingPluginsType is null) return;
+        // Get an array of plugins to remove
+        var dataValidationPluginsToRemove =
+            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
-        var dataValidatorsProp = bindingPluginsType.GetProperty("DataValidators",
-            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-        if (dataValidatorsProp?.GetValue(null) is not IList dataValidators) return;
-
-        for (var i = dataValidators.Count - 1; i >= 0; i--)
+        // remove each entry found
+        foreach (var plugin in dataValidationPluginsToRemove)
         {
-            if (dataValidators[i] is DataAnnotationsValidationPlugin)
-                dataValidators.RemoveAt(i);
+            BindingPlugins.DataValidators.Remove(plugin);
         }
     }
 }

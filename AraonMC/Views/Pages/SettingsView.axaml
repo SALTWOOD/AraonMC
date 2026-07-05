@@ -99,7 +99,7 @@
                         <TextBlock Text="{Binding GameDirectoryDefault, StringFormat='Default: \{0\}'}" FontSize="11"
                                    Foreground="{DynamicResource TextMutedBrush}"/>
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBox Grid.Column="0" Classes="field" Text="{Binding GameDirectory}" PlaceholderText="{Binding GameDirectoryDefault}"/>
+                            <TextBox Grid.Column="0" Classes="field" Text="{Binding GameDirectory}" Watermark="{Binding GameDirectoryDefault}"/>
                             <Button Grid.Column="1" Classes="subtle" Margin="8,0,0,0" Padding="14,9" VerticalAlignment="Bottom"
                                     Command="{Binding BrowseGameDirectoryCommand}">
                                 <TextBlock Text="Browse…" FontWeight="SemiBold"/>

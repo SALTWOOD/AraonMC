@@ -35,7 +35,7 @@
                     <Path Grid.Column="0" Width="16" Height="16" Margin="10,0" Stretch="Uniform"
                           Fill="Transparent" Stroke="{DynamicResource TextMutedBrush}" StrokeThickness="1.5"
                           Data="{StaticResource search}"/>
-                    <TextBox Grid.Column="1" Text="{Binding SearchText}" PlaceholderText="Search versions..."
+                    <TextBox Grid.Column="1" Text="{Binding SearchText}" Watermark="Search versions..."
                              Background="Transparent" BorderThickness="0"
                              Foreground="{DynamicResource TextPrimaryBrush}"
                              CaretBrush="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
