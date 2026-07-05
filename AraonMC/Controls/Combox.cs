@@ -114,6 +114,10 @@ public class Combox : TemplatedControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _animTimer?.Stop();
+        _animTimer = null;
+        _fadeTimer?.Stop();
+        _fadeTimer = null;
         if (_topLevel != null)
         {
             _topLevel.RemoveHandler(PointerPressedEvent, OnRootPointerPressed);

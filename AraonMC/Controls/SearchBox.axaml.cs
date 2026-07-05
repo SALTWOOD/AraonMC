@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AraonMC.Controls;
 
@@ -12,6 +13,13 @@ public partial class SearchBox : UserControl
 
     public static readonly StyledProperty<string?> WatermarkTextProperty =
         AvaloniaProperty.Register<SearchBox, string?>(nameof(WatermarkText), defaultValue: "Click to search");
+
+    private static readonly Cursor IBeamCursor = new(StandardCursorType.Ibeam);
+
+    private static IBrush? _surfaceAltBrush;
+    private static IBrush? _surfaceBrush;
+
+    private TopLevel? _topLevel;
 
     public string? SearchText
     {
@@ -36,30 +44,40 @@ public partial class SearchBox : UserControl
         SearchTextBox.LostFocus += OnSearchLostFocus;
     }
 
-    private void OnSearchPointerEnter(object? sender, PointerEventArgs e)
+    private static void OnSearchPointerEnter(object? sender, PointerEventArgs e)
     {
-        SearchBorder.Background = this.FindResource("SurfaceAltBrush") as Avalonia.Media.IBrush;
+        if (sender is Border border)
+        {
+            _surfaceAltBrush ??= Application.Current?.FindResource("SurfaceAltBrush") as IBrush;
+            border.Background = _surfaceAltBrush;
+        }
     }
 
-    private void OnSearchPointerLeave(object? sender, PointerEventArgs e)
+    private static void OnSearchPointerLeave(object? sender, PointerEventArgs e)
     {
-        SearchBorder.Background = this.FindResource("SurfaceBrush") as Avalonia.Media.IBrush;
+        if (sender is Border border)
+        {
+            _surfaceBrush ??= Application.Current?.FindResource("SurfaceBrush") as IBrush;
+            border.Background = _surfaceBrush;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel != null)
-            topLevel.AddHandler(PointerPressedEvent, OnRootPointerPressed, RoutingStrategies.Tunnel);
+        _topLevel = TopLevel.GetTopLevel(this);
+        if (_topLevel != null)
+            _topLevel.AddHandler(PointerPressedEvent, OnRootPointerPressed, RoutingStrategies.Tunnel);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel != null)
-            topLevel.RemoveHandler(PointerPressedEvent, OnRootPointerPressed);
+        if (_topLevel != null)
+        {
+            _topLevel.RemoveHandler(PointerPressedEvent, OnRootPointerPressed);
+            _topLevel = null;
+        }
     }
 
     private void OnSearchPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -69,7 +87,7 @@ public partial class SearchBox : UserControl
 
     private void OnSearchGotFocus(object? sender, RoutedEventArgs e)
     {
-        SearchBorder.Cursor = new Cursor(StandardCursorType.Ibeam);
+        SearchBorder.Cursor = IBeamCursor;
     }
 
     private void OnSearchLostFocus(object? sender, RoutedEventArgs e)

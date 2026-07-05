@@ -14,6 +14,9 @@ public static class CardBehavior
     public static readonly AttachedProperty<object?> ReleaseCommandParameterProperty =
         AvaloniaProperty.RegisterAttached<Border, object?>("ReleaseCommandParameter", typeof(CardBehavior));
 
+    private static readonly AttachedProperty<Helper?> HelperProperty =
+        AvaloniaProperty.RegisterAttached<Border, Helper?>("CardBehaviorHelper", typeof(CardBehavior));
+
     public static ICommand? GetReleaseCommand(Border element) => element.GetValue(ReleaseCommandProperty);
     public static void SetReleaseCommand(Border element, ICommand? value) => element.SetValue(ReleaseCommandProperty, value);
 
@@ -22,71 +25,136 @@ public static class CardBehavior
 
     static CardBehavior()
     {
-        ReleaseCommandProperty.Changed.AddClassHandler<Border>((border, e) =>
+        ReleaseCommandProperty.Changed.AddClassHandler<Border>(OnReleaseCommandChanged);
+    }
+
+    private static void OnReleaseCommandChanged(Border border, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.NewValue is ICommand)
         {
-            if (e.NewValue is ICommand)
+            if (border.GetValue(HelperProperty) is null)
             {
-                border.PointerPressed += OnPointerPressed;
-                border.PointerReleased += OnPointerReleased;
+                var helper = new Helper(border);
+                border.SetValue(HelperProperty, helper);
+                border.DetachedFromVisualTree += OnDetached;
             }
-            else
+        }
+        else
+        {
+            Detach(border);
+        }
+    }
+
+    private static void OnDetached(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is Border border)
+            Detach(border);
+    }
+
+    private static void Detach(Border border)
+    {
+        border.DetachedFromVisualTree -= OnDetached;
+        var helper = border.GetValue(HelperProperty);
+        if (helper is not null)
+        {
+            helper.Dispose();
+            border.SetValue(HelperProperty, null);
+        }
+    }
+
+    private sealed class Helper : IDisposable
+    {
+        private readonly Border _border;
+        private CancellationTokenSource? _animCts;
+        private bool _pressed;
+        private bool _disposed;
+
+        public Helper(Border border)
+        {
+            _border = border;
+            _border.PointerPressed += OnPointerPressed;
+            _border.PointerReleased += OnPointerReleased;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            CancelAnim();
+            _border.PointerPressed -= OnPointerPressed;
+            _border.PointerReleased -= OnPointerReleased;
+        }
+
+        private void CancelAnim()
+        {
+            _animCts?.Cancel();
+            _animCts?.Dispose();
+            _animCts = null;
+        }
+
+        private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            var point = e.GetCurrentPoint(_border);
+            if (!point.Properties.IsLeftButtonPressed) return;
+
+            _pressed = true;
+
+            if (_border.RenderTransform is not ScaleTransform st)
             {
-                border.PointerPressed -= OnPointerPressed;
-                border.PointerReleased -= OnPointerReleased;
+                st = new ScaleTransform(1, 1);
+                _border.RenderTransform = st;
             }
-        });
-    }
 
-    private static void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (sender is not Border border) return;
-
-        var point = e.GetCurrentPoint(border);
-        if (!point.Properties.IsLeftButtonPressed) return;
-
-        if (border.RenderTransform is not ScaleTransform st)
-        {
-            st = new ScaleTransform(1, 1);
-            border.RenderTransform = st;
+            CancelAnim();
+            _animCts = new CancellationTokenSource();
+            _ = AnimateAsync(st, 0.97, 80, _animCts.Token);
         }
 
-        _ = ScaleTo(st, 0.97, 80);
-    }
-
-    private static void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        if (sender is not Border border) return;
-
-        if (border.RenderTransform is ScaleTransform st)
+        private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
         {
-            _ = ScaleTo(st, 1.0, 160);
+            if (!_pressed) return;
+            _pressed = false;
+
+            if (e.InitialPressMouseButton != MouseButton.Left) return;
+
+            if (_border.RenderTransform is ScaleTransform st)
+            {
+                CancelAnim();
+                _animCts = new CancellationTokenSource();
+                _ = AnimateAsync(st, 1.0, 160, _animCts.Token);
+            }
+
+            var command = _border.GetValue(ReleaseCommandProperty);
+            var parameter = _border.GetValue(ReleaseCommandParameterProperty) ?? _border.DataContext;
+            if (command?.CanExecute(parameter) == true)
+            {
+                command.Execute(parameter);
+            }
         }
 
-        var command = border.GetValue(ReleaseCommandProperty);
-        var parameter = border.GetValue(ReleaseCommandParameterProperty) ?? border.DataContext;
-        if (command?.CanExecute(parameter) == true)
+        private static async Task AnimateAsync(ScaleTransform st, double target, int durationMs, CancellationToken ct)
         {
-            command.Execute(parameter);
+            try
+            {
+                double start = st.ScaleX;
+                double delta = target - start;
+                int frames = 8;
+                int delay = Math.Max(1, durationMs / frames);
+
+                for (int i = 1; i <= frames; i++)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    double t = (double)i / frames;
+                    double eased = t < 0.5
+                        ? 2 * t * t
+                        : 1 - Math.Pow(-2 * t + 2, 2) / 2;
+                    st.ScaleX = st.ScaleY = start + delta * eased;
+                    await Task.Delay(delay, ct);
+                }
+
+                st.ScaleX = st.ScaleY = target;
+            }
+            catch (OperationCanceledException) { }
         }
-    }
-
-    private static async Task ScaleTo(ScaleTransform st, double target, int durationMs)
-    {
-        double start = st.ScaleX;
-        double delta = target - start;
-        int frames = 8;
-        int delay = Math.Max(1, durationMs / frames);
-
-        for (int i = 1; i <= frames; i++)
-        {
-            double t = (double)i / frames;
-            double eased = t < 0.5
-                ? 2 * t * t
-                : 1 - Math.Pow(-2 * t + 2, 2) / 2;
-            st.ScaleX = st.ScaleY = start + delta * eased;
-            await Task.Delay(delay);
-        }
-
-        st.ScaleX = st.ScaleY = target;
     }
 }
