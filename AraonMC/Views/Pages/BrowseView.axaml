@@ -100,17 +100,32 @@
                     <Setter Property="MinHeight" Value="0"/>
                     <Setter Property="CornerRadius" Value="8"/>
                     <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
-                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                </Style>
+                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource BorderSoftBrush}"/>
+                    <Setter Property="CornerRadius" Value="8"/>
                 </Style>
                 <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
                     <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
                     <Setter Property="CornerRadius" Value="8"/>
                     <Setter Property="TextElement.Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
                 </Style>
+                <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+                    <Setter Property="CornerRadius" Value="8"/>
+                    <Setter Property="TextElement.Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
+                </Style>
                 <Style Selector="ListBoxItem:selected">
+                    <Setter Property="BorderThickness" Value="0"/>
                     <Setter Property="FontWeight" Value="SemiBold"/>
+                </Style>
+                <Style Selector="ListBoxItem:focusvisual">
+                    <Setter Property="IsVisible" Value="False"/>
                 </Style>
             </ListBox.Styles>
             <ListBox.ItemTemplate>

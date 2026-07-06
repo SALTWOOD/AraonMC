@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pages="using:AraonMC.ViewModels.Pages"
+             xmlns:controls="using:AraonMC.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="640"
@@ -26,6 +27,42 @@
                             <ComboBoxItem>日本語</ComboBoxItem>
                             <ComboBoxItem>Deutsch</ComboBoxItem>
                         </ComboBox>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Color mode" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Light, dark, or follow the system." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                        <controls:ComboBox Grid.Column="1"
+                                    ItemsSource="{Binding ColorModeOptions}"
+                                    SelectedItem="{Binding SelectedColorModeOption}"
+                                    MinWidth="180"
+                                    PlaceholderText="Color mode">
+                            <controls:ComboBox.ItemTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <TextBlock Text="{Binding Label}" FontSize="13" FontWeight="SemiBold"/>
+                                </DataTemplate>
+                            </controls:ComboBox.ItemTemplate>
+                        </controls:ComboBox>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Color theme" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Accent color for buttons and highlights." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                        </StackPanel>
+                        <controls:ComboBox Grid.Column="1"
+                                    ItemsSource="{Binding ColorThemeOptions}"
+                                    SelectedItem="{Binding SelectedColorThemeOption}"
+                                    MinWidth="180"
+                                    PlaceholderText="Color theme">
+                            <controls:ComboBox.ItemTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <TextBlock Text="{Binding Label}" FontSize="13" FontWeight="SemiBold"/>
+                                </DataTemplate>
+                            </controls:ComboBox.ItemTemplate>
+                        </controls:ComboBox>
                     </Grid>
 
                     <Border Classes="divider"/>

@@ -16,15 +16,16 @@
                           Data="{StaticResource search}"
                           IsHitTestVisible="False" Opacity="0.6" Margin="16,0,0,0"/>
                     <TextBox Name="SearchTextBox"
-                             Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
-                             Watermark="{Binding WatermarkText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
-                             Background="Transparent" BorderThickness="0"
-                             Foreground="{DynamicResource TextPrimaryBrush}"
-                             CaretBrush="{DynamicResource AccentBrush}"
-                             FontSize="16" FontWeight="Medium"
-                             TextAlignment="Left"
-                             MinWidth="120"
-                             TextChanged="OnTextChanged">
+                              Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
+                              Watermark="{Binding WatermarkText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
+                              PlaceholderForeground="{DynamicResource TextSecondaryBrush}"
+                              Background="Transparent" BorderThickness="0"
+                              Foreground="{DynamicResource TextPrimaryBrush}"
+                              CaretBrush="{DynamicResource AccentBrush}"
+                              FontSize="16" FontWeight="Medium"
+                              TextAlignment="Left"
+                              MinWidth="120"
+                              TextChanged="OnTextChanged">
                         <TextBox.Styles>
                             <Style Selector="TextBox:pointerover /template/ Border">
                                 <Setter Property="Background" Value="Transparent"/>

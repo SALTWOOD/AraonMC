@@ -13,6 +13,7 @@ using AraonMC.Instances;
 using AraonMC.Launching;
 using AraonMC.Notifications;
 using AraonMC.Styles;
+using AraonMC.UI.Theme;
 using AraonMC.ViewModels;
 using AraonMC.Views;
 using MinecraftDownloader.Core.Manifest;
@@ -50,6 +51,8 @@ public partial class App : Application
                 ConfigPaths.InstancesConfigFile(),
                 onWarning: msg => _ = notifications.ShowAsync(NotificationRequest.Toast(
                     "Config file reset", msg, NotificationLevel.Warning))));
+
+            ThemeService.Initialize();
 
             var deviceCodeUi = new AvaloniaDeviceCodeUI();
             var authenticator = new MinecraftAuthenticator(new MinecraftAuthOptions

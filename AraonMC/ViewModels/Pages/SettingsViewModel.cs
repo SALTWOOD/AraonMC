@@ -1,8 +1,10 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Config;
+using AraonMC.UI.Theme;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CoreConfig = AraonMC.Core.Config.Config;
@@ -19,6 +21,22 @@ public partial class SettingsViewModel : PageViewModelBase
         _notifications = notifications;
         _pickFolder = pickFolder;
         Title = "Settings";
+
+        ColorModeOptions =
+        [
+            new Option<ColorMode>("Light", ColorMode.Light),
+            new Option<ColorMode>("Dark", ColorMode.Dark),
+            new Option<ColorMode>("System", ColorMode.System),
+        ];
+        ColorThemeOptions =
+        [
+            new Option<ColorTheme>("Sky Blue", ColorTheme.SkyBlue),
+            new Option<ColorTheme>("Amber", ColorTheme.Amber),
+        ];
+
+        SelectedColorModeOption = ColorModeOptions.First(o => o.Value == CoreConfig.Theme.ColorMode);
+        var currentTheme = ThemeService.CurrentTheme;
+        SelectedColorThemeOption = ColorThemeOptions.First(o => o.Value == currentTheme);
     }
 
     public string AppVersion => "AraonMC 0.1.0 (dev)";
@@ -28,6 +46,27 @@ public partial class SettingsViewModel : PageViewModelBase
     [ObservableProperty] private bool _keepLauncherOpen = true;
     [ObservableProperty] private bool _discordRpc = false;
     [ObservableProperty] private bool _checkUpdatesOnStart = true;
+
+    // Theme
+    public IReadOnlyList<Option<ColorMode>> ColorModeOptions { get; }
+    public IReadOnlyList<Option<ColorTheme>> ColorThemeOptions { get; }
+
+    [ObservableProperty] private Option<ColorMode>? _selectedColorModeOption;
+    [ObservableProperty] private Option<ColorTheme>? _selectedColorThemeOption;
+
+    partial void OnSelectedColorModeOptionChanged(Option<ColorMode>? value)
+    {
+        if (value is null) return;
+        CoreConfig.Theme.ColorMode = value.Value;
+        ThemeService.RefreshColorMode();
+    }
+
+    partial void OnSelectedColorThemeOptionChanged(Option<ColorTheme>? value)
+    {
+        if (value is null) return;
+        ThemeService.CurrentTheme = value.Value;
+        ThemeService.RefreshTheme();
+    }
 
     // Java
     [ObservableProperty] private string _javaPath = @"C:\Program Files\Java\jdk-21\bin\javaw.exe";

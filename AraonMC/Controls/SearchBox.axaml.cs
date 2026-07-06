@@ -16,9 +16,6 @@ public partial class SearchBox : UserControl
 
     private static readonly Cursor IBeamCursor = new(StandardCursorType.Ibeam);
 
-    private static IBrush? _surfaceAltBrush;
-    private static IBrush? _surfaceBrush;
-
     private TopLevel? _topLevel;
 
     public string? SearchText
@@ -48,8 +45,7 @@ public partial class SearchBox : UserControl
     {
         if (sender is Border border)
         {
-            _surfaceAltBrush ??= Application.Current?.FindResource("SurfaceAltBrush") as IBrush;
-            border.Background = _surfaceAltBrush;
+            border.Background = Application.Current?.FindResource("SurfaceAltBrush") as IBrush;
         }
     }
 
@@ -57,8 +53,7 @@ public partial class SearchBox : UserControl
     {
         if (sender is Border border)
         {
-            _surfaceBrush ??= Application.Current?.FindResource("SurfaceBrush") as IBrush;
-            border.Background = _surfaceBrush;
+            border.Background = Application.Current?.FindResource("SurfaceBrush") as IBrush;
         }
     }
 

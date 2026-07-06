@@ -23,6 +23,7 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
         <PackageReference Include="Tomlyn" Version="2.10.1" />
         <PackageReference Include="MinecraftDownloader.Core" Version="1.0.0"/>
+        <PackageReference Include="Wacton.Unicolour" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup>

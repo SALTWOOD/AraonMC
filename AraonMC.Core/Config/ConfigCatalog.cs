@@ -36,6 +36,14 @@ public partial class Config
         [Key(Default = false)] public partial bool   Fullscreen { get; set; }
     }
 
+    [Section(Scope = ConfigScope.Global, Path = "theme")]
+    public sealed partial class ThemeSection
+    {
+        [Key(Default = ColorMode.Dark)]    public partial ColorMode   ColorMode  { get; set; }
+        [Key(Default = ColorTheme.SkyBlue)] public partial ColorTheme DarkColor  { get; set; }
+        [Key(Default = ColorTheme.Amber)]  public partial ColorTheme LightColor { get; set; }
+    }
+
     /// <summary>
     /// Account-related global settings. Only scalars live here — the actual account records
     /// (with refresh tokens) are persisted by the dedicated <c>IAccountStore</c>, since they are

@@ -187,10 +187,27 @@ public sealed class TomlConfigStore : IConfigStore
     {
         var dir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-        var text = TomlSerializer.Serialize(model);
+        var table = ToTomlTable(model);
+        var text = TomlSerializer.Serialize(table);
         var tmp = path + ".tmp";
         File.WriteAllText(tmp, text);
         File.Move(tmp, path, overwrite: true);
+    }
+
+    private static TomlTable ToTomlTable(Dictionary<string, object?> src)
+    {
+        var table = new TomlTable();
+        foreach (var kv in src)
+        {
+            if (kv.Value is null) continue;
+            if (kv.Value is Dictionary<string, object?> nested)
+                table[kv.Key] = ToTomlTable(nested);
+            else if (kv.Value.GetType().IsEnum)
+                table[kv.Key] = Enum.GetName(kv.Value.GetType(), kv.Value) ?? kv.Value.ToString()!;
+            else
+                table[kv.Key] = kv.Value;
+        }
+        return table;
     }
 
     private static Dictionary<string, object?> ToPlain(object? src)
