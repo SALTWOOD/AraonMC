@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using AraonMC.Core.Config;
 using Tomlyn;
+using Tomlyn.Model;
 
 namespace AraonMC.Config;
 
@@ -51,8 +52,8 @@ public sealed class TomlConfigStore : IConfigStore
         try
         {
             if (!File.Exists(path)) return new Dictionary<string, object?>();
-            var doc = Toml.Parse(File.ReadAllText(path));
-            return ToPlain(doc.ToModel());
+            var doc = TomlSerializer.Deserialize<TomlTable>(File.ReadAllText(path));
+            return ToPlain(doc);
         }
         catch (Exception ex)
         {
@@ -186,7 +187,7 @@ public sealed class TomlConfigStore : IConfigStore
     {
         var dir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-        var text = Toml.FromModel(model, new TomlModelOptions());
+        var text = TomlSerializer.Serialize(model);
         var tmp = path + ".tmp";
         File.WriteAllText(tmp, text);
         File.Move(tmp, path, overwrite: true);
