@@ -1,3 +1,5 @@
+using AraonMC.Core.Config;
+using AraonMC.UI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -109,6 +111,8 @@ public class ComboBox : TemplatedControl
             if (_topLevel is Window w)
                 w.Deactivated += OnWindowDeactivated;
         }
+        ThemeService.ColorModeChanged += OnThemeChanged;
+        ThemeService.ColorThemeChanged += OnThemeChanged;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -125,6 +129,8 @@ public class ComboBox : TemplatedControl
                 w.Deactivated -= OnWindowDeactivated;
             _topLevel = null;
         }
+        ThemeService.ColorModeChanged -= OnThemeChanged;
+        ThemeService.ColorThemeChanged -= OnThemeChanged;
     }
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
@@ -240,6 +246,9 @@ public class ComboBox : TemplatedControl
         else if (change.Property == ItemsSourceProperty)
             UpdateSelectedText();
     }
+
+    private void OnThemeChanged(bool isDarkMode, ColorTheme theme) => UpdateSelectedText();
+    private void OnThemeChanged(ColorTheme theme) => UpdateSelectedText();
 
     private void UpdateSelectedText()
     {
