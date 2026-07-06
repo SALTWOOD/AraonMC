@@ -4,39 +4,39 @@
 
     <!-- Primary accent button (PLAY / confirm) -->
     <Style Selector="Button.accent">
-        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrush4}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ColorBrush1}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="20,10"/>
     </Style>
     <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrush3}"/>
     </Style>
     <Style Selector="Button.accent:pressed /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource AccentActiveBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrush2}"/>
     </Style>
 
     <!-- Subtle / secondary button -->
     <Style Selector="Button.subtle">
-        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray1}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="16,9"/>
     </Style>
     <Style Selector="Button.subtle:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray4}"/>
     </Style>
 
     <!-- Danger button -->
     <Style Selector="Button.danger">
-        <Setter Property="Background" Value="{DynamicResource DangerBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushDanger}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="16,9"/>
     </Style>
     <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource DangerHoverBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushDangerHover}"/>
     </Style>
 
     <!-- Flat: transparent, used for nav items / cards; only hover shows a tint -->
@@ -46,7 +46,7 @@
         <Setter Property="Padding" Value="0"/>
     </Style>
     <Style Selector="Button.flat:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
 
@@ -58,24 +58,24 @@
         <Setter Property="CornerRadius" Value="14"/>
     </Style>
     <Style Selector="Button.icon:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
         <Setter Property="CornerRadius" Value="14"/>
     </Style>
     <Style Selector="Button.icon:pointerover Path">
-        <Setter Property="Stroke" Value="{DynamicResource TextPrimaryBrush}"/>
+        <Setter Property="Stroke" Value="{DynamicResource ColorBrushGray1}"/>
     </Style>
 
     <!-- Chrome window buttons -->
     <Style Selector="Button.chrome">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray2}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Width" Value="46"/>
         <Setter Property="Height" Value="32"/>
     </Style>
     <Style Selector="Button.chrome Path">
-        <Setter Property="Stroke" Value="{DynamicResource TextSecondaryBrush}"/>
+        <Setter Property="Stroke" Value="{DynamicResource ColorBrushGray2}"/>
         <Setter Property="StrokeThickness" Value="1.5"/>
         <Setter Property="Fill" Value="Transparent"/>
         <Setter Property="Width" Value="14"/>
@@ -83,10 +83,10 @@
         <Setter Property="Stretch" Value="Uniform"/>
     </Style>
     <Style Selector="Button.chrome:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
     </Style>
     <Style Selector="Button.chrome#closeBtn:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource DangerBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushDanger}"/>
     </Style>
     <Style Selector="Button.chrome#closeBtn:pointerover Path">
         <Setter Property="Stroke" Value="White"/>
@@ -94,34 +94,34 @@
 
     <!-- Text field -->
     <Style Selector="TextBox.field">
-        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-        <Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray5}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushGray4}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray1}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource ColorBrush4}"/>
         <Setter Property="Padding" Value="10,7"/>
     </Style>
     <Style Selector="TextBox.field:focus /template/ Border#PART_BorderElement">
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ColorBrush4}"/>
     </Style>
     <!-- Cards / surfaces -->
     <Style Selector="Border.card">
-        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray5}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushGray7}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{DynamicResource LargeCornerRadius}"/>
     </Style>
     <Style Selector="Border.card:pointerover">
-        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
     </Style>
     <Style Selector="Border.divider">
-        <Setter Property="Background" Value="{DynamicResource BorderSoftBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray7}"/>
         <Setter Property="Height" Value="1"/>
     </Style>
 
     <!-- Avatar circle -->
     <Style Selector="Border.avatar">
         <Setter Property="CornerRadius" Value="999"/>
-        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrush4}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
@@ -138,9 +138,9 @@
     <!--  ComboBox -->
     <!-- ============================== -->
     <Style Selector="controls|ComboBox">
-        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderSoftBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray5}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray1}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushGray7}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="MinHeight" Value="36"/>
         <Setter Property="Template">
@@ -162,7 +162,7 @@
                                        TextTrimming="CharacterEllipsis"
                                        FontSize="13"
                                        FontWeight="Medium"
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource ColorBrushGray2}"
                                        Opacity="0.7"/>
 
                             <Grid Name="PART_ChevronContainer"
@@ -174,7 +174,7 @@
                                 <Path Name="PART_Chevron"
                                       Stretch="Uniform"
                                       Fill="Transparent"
-                                      Stroke="{DynamicResource TextSecondaryBrush}"
+                                      Stroke="{DynamicResource ColorBrushGray2}"
                                       StrokeThickness="2"
                                       StrokeLineCap="Round"
                                       StrokeJoin="Round"
@@ -191,9 +191,9 @@
                            VerticalOffset="8"
                            PlacementTarget="{TemplateBinding}">
                         <Border Name="PART_DropdownBorder"
-                                Background="{DynamicResource SurfaceBrush}"
+                                Background="{DynamicResource ColorBrushGray5}"
                                 CornerRadius="14"
-                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderBrush="{DynamicResource ColorBrushGray4}"
                                 BorderThickness="1"
                                 Padding="0"
                                 MaxHeight="300"
@@ -202,7 +202,7 @@
                                           VerticalScrollBarVisibility="Auto">
                                 <ListBox Name="PART_ListBox"
                                          Background="Transparent"
-                                         Foreground="{DynamicResource TextPrimaryBrush}"
+                                         Foreground="{DynamicResource ColorBrushGray1}"
                                          BorderThickness="0"
                                          Padding="4"
                                          ItemsSource="{TemplateBinding ItemsSource}"
@@ -223,16 +223,16 @@
                                             <Setter Property="Cursor" Value="Hand"/>
                                         </Style>
                                         <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
-                                            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                            <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray1}"/>
                                         </Style>
                                         <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-                                            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                            <Setter Property="Background" Value="{DynamicResource ColorBrush4}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray1}"/>
                                         </Style>
                                         <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
-                                            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                            <Setter Property="Background" Value="{DynamicResource ColorBrush3}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray1}"/>
                                         </Style>
                                         <Style Selector="ListBoxItem:focusvisual">
                                             <Setter Property="IsVisible" Value="False"/>
@@ -247,7 +247,7 @@
         </Setter>
     </Style>
     <Style Selector="controls|ComboBox:pointerover /template/ Border#PART_Border">
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushGray4}"/>
     </Style>
 
 </Styles>

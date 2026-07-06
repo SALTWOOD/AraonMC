@@ -1,27 +1,27 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:AraonMC.Controls"
              x:Class="AraonMC.Controls.SearchBox"
              x:DataType="controls:SearchBox">
     <Grid>
         <Border Name="SearchBorder"
-                Background="{DynamicResource SurfaceBrush}"
+                Background="{DynamicResource ColorBrushGray5}"
                 CornerRadius="12" Height="48"
                 BorderThickness="0">
             <Grid>
                 <StackPanel Orientation="Horizontal" Spacing="8"
                             HorizontalAlignment="Left" VerticalAlignment="Center">
                     <Path Width="20" Height="20" Stretch="Uniform"
-                          Fill="Transparent" Stroke="{DynamicResource TextMutedBrush}" StrokeThickness="2"
+                          Fill="Transparent" Stroke="{DynamicResource ColorBrushGray3}" StrokeThickness="2"
                           Data="{StaticResource search}"
                           IsHitTestVisible="False" Opacity="0.6" Margin="16,0,0,0"/>
                     <TextBox Name="SearchTextBox"
                               Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
                               Watermark="{Binding WatermarkText, RelativeSource={RelativeSource AncestorType=controls:SearchBox}}"
-                              PlaceholderForeground="{DynamicResource TextSecondaryBrush}"
+                              PlaceholderForeground="{DynamicResource ColorBrushGray2}"
                               Background="Transparent" BorderThickness="0"
-                              Foreground="{DynamicResource TextPrimaryBrush}"
-                              CaretBrush="{DynamicResource AccentBrush}"
+                              Foreground="{DynamicResource ColorBrushGray1}"
+                              CaretBrush="{DynamicResource ColorBrush4}"
                               FontSize="16" FontWeight="Medium"
                               TextAlignment="Left"
                               MinWidth="120"
@@ -45,7 +45,7 @@
                         Click="OnClearClick"
                         IsVisible="False">
                     <Path Width="10" Height="10" Stretch="Uniform"
-                          Fill="Transparent" Stroke="{DynamicResource TextMutedBrush}" StrokeThickness="1.8"
+                          Fill="Transparent" Stroke="{DynamicResource ColorBrushGray3}" StrokeThickness="1.8"
                           StrokeLineCap="Round" StrokeJoin="Round"
                           Data="M2,2 L8,8 M8,2 L2,8"/>
                 </Button>

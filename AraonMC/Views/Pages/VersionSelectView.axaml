@@ -13,9 +13,9 @@
             <Border Classes="card" Padding="14,12" Margin="0,0,0,8">
                 <Grid ColumnDefinitions="*,Auto,Auto">
                     <TextBlock Grid.Column="0" Text="{Binding Id}" FontSize="14" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                               Foreground="{DynamicResource ColorBrushGray1}" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="1" Text="{Binding ReleaseTime, StringFormat='\{0:yyyy-MM-dd\}'}" FontSize="12"
-                               Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                               Foreground="{DynamicResource ColorBrushGray3}" VerticalAlignment="Center" Margin="0,0,16,0"/>
                     <Button Grid.Column="2" Classes="accent" Padding="16,7"
                             Command="{Binding $parent[UserControl].((pages:VersionSelectViewModel)DataContext).InstallCommand}"
                             CommandParameter="{Binding}">
@@ -28,17 +28,17 @@
 
     <Grid Margin="28,8,28,28" RowDefinitions="Auto,*">
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,4,0,18">
-            <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+            <Border Grid.Column="0" Background="{DynamicResource ColorBrushGray5}"
+                    BorderBrush="{DynamicResource ColorBrushGray4}" BorderThickness="1"
                     CornerRadius="8" Height="36">
                 <Grid ColumnDefinitions="Auto,*">
                     <Path Grid.Column="0" Width="16" Height="16" Margin="10,0" Stretch="Uniform"
-                          Fill="Transparent" Stroke="{DynamicResource TextMutedBrush}" StrokeThickness="1.5"
+                          Fill="Transparent" Stroke="{DynamicResource ColorBrushGray3}" StrokeThickness="1.5"
                           Data="{StaticResource search}"/>
                     <TextBox Grid.Column="1" Text="{Binding SearchText}" Watermark="Search versions..."
                              Background="Transparent" BorderThickness="0"
-                             Foreground="{DynamicResource TextPrimaryBrush}"
-                             CaretBrush="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
+                             Foreground="{DynamicResource ColorBrushGray1}"
+                             CaretBrush="{DynamicResource ColorBrush4}" VerticalAlignment="Center"/>
                 </Grid>
             </Border>
             <ComboBox Grid.Column="1" Width="160" Height="36"

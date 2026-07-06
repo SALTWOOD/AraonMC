@@ -45,7 +45,7 @@ public partial class SearchBox : UserControl
     {
         if (sender is Border border)
         {
-            border.Background = Application.Current?.FindResource("SurfaceAltBrush") as IBrush;
+            border.Background = Application.Current?.FindResource("ColorBrushGray6") as IBrush;
         }
     }
 
@@ -53,7 +53,7 @@ public partial class SearchBox : UserControl
     {
         if (sender is Border border)
         {
-            border.Background = Application.Current?.FindResource("SurfaceBrush") as IBrush;
+            border.Background = Application.Current?.FindResource("ColorBrushGray5") as IBrush;
         }
     }
 

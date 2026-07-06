@@ -14,12 +14,12 @@
             <!-- General -->
             <Border Classes="card" Padding="20">
                 <StackPanel Spacing="14">
-                    <TextBlock Text="General" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Text="General" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource ColorBrushGray1}"/>
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Language" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <TextBlock Text="Launcher display language." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="Language" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                            <TextBlock Text="Launcher display language." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}"/>
                         </StackPanel>
                         <ComboBox Grid.Column="1" SelectedItem="{Binding Language}" MinWidth="180">
                             <ComboBoxItem>English (US)</ComboBoxItem>
@@ -31,8 +31,8 @@
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Color mode" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <TextBlock Text="Light, dark, or follow the system." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="Color mode" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                            <TextBlock Text="Light, dark, or follow the system." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}"/>
                         </StackPanel>
                         <controls:ComboBox Grid.Column="1"
                                     ItemsSource="{Binding ColorModeOptions}"
@@ -49,8 +49,8 @@
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Color theme" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <TextBlock Text="Accent color for buttons and highlights." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="Color theme" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                            <TextBlock Text="Accent color for buttons and highlights." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}"/>
                         </StackPanel>
                         <controls:ComboBox Grid.Column="1"
                                     ItemsSource="{Binding ColorThemeOptions}"
@@ -69,24 +69,24 @@
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Keep launcher open" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <TextBlock Text="Don't close the launcher after starting the game." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="Keep launcher open" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                            <TextBlock Text="Don't close the launcher after starting the game." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1" IsChecked="{Binding KeepLauncherOpen}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Discord Rich Presence" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <TextBlock Text="Show current activity in Discord." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="Discord Rich Presence" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                            <TextBlock Text="Show current activity in Discord." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1" IsChecked="{Binding DiscordRpc}"/>
                     </Grid>
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Check for updates on start" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <TextBlock Text="Automatically look for launcher updates." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            <TextBlock Text="Check for updates on start" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                            <TextBlock Text="Automatically look for launcher updates." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1" IsChecked="{Binding CheckUpdatesOnStart}"/>
                     </Grid>
@@ -96,30 +96,30 @@
             <!-- Java -->
             <Border Classes="card" Padding="20">
                 <StackPanel Spacing="14">
-                    <TextBlock Text="Java" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Text="Java" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource ColorBrushGray1}"/>
 
                     <StackPanel Spacing="5">
-                        <TextBlock Text="Java runtime path" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="Java runtime path" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                         <TextBox Classes="field" Text="{Binding JavaPath}"/>
                     </StackPanel>
 
                     <StackPanel Spacing="5">
-                        <TextBlock Text="JVM arguments" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="JVM arguments" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                         <TextBox Classes="field" Text="{Binding JavaArguments}"/>
                     </StackPanel>
 
                     <StackPanel Spacing="5">
                         <Grid ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="Maximum memory" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Grid.Column="0" Text="Maximum memory" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                             <TextBlock Grid.Column="1" Text="{Binding MaxMemoryMb, StringFormat='\{0:0\} MB'}" FontSize="13"
-                                       Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Right"/>
+                                       Foreground="{DynamicResource ColorBrush4}" HorizontalAlignment="Right"/>
                         </Grid>
                         <Slider Minimum="512" Maximum="16384" Value="{Binding MaxMemoryMb}"
                                 TickFrequency="512" IsSnapToTickEnabled="True"/>
                     </StackPanel>
 
                     <StackPanel Spacing="5">
-                        <TextBlock Text="Minimum memory" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="Minimum memory" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                         <Slider Minimum="128" Maximum="4096" Value="{Binding MinMemoryMb}"
                                 TickFrequency="128" IsSnapToTickEnabled="True"/>
                     </StackPanel>
@@ -129,12 +129,12 @@
             <!-- Game -->
             <Border Classes="card" Padding="20">
                 <StackPanel Spacing="14">
-                    <TextBlock Text="Game" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Text="Game" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource ColorBrushGray1}"/>
 
                     <StackPanel Spacing="5">
-                        <TextBlock Text="Game directory" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="Game directory" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                         <TextBlock Text="{Binding GameDirectoryDefault, StringFormat='Default: \{0\}'}" FontSize="11"
-                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                   Foreground="{DynamicResource ColorBrushGray3}"/>
                         <Grid ColumnDefinitions="*,Auto">
                             <TextBox Grid.Column="0" Classes="field" Text="{Binding GameDirectory}" Watermark="{Binding GameDirectoryDefault}"/>
                             <Button Grid.Column="1" Classes="subtle" Margin="8,0,0,0" Padding="14,9" VerticalAlignment="Bottom"
@@ -146,15 +146,15 @@
 
                     <Grid ColumnDefinitions="*,*,Auto">
                         <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,16,0">
-                            <TextBlock Text="Window width" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Window width" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                             <NumericUpDown Value="{Binding WindowWidth}" Minimum="640" Maximum="3840" Increment="40" FormatString="0"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Spacing="5">
-                            <TextBlock Text="Window height" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Window height" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                             <NumericUpDown Value="{Binding WindowHeight}" Minimum="480" Maximum="2160" Increment="40" FormatString="0"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2" Spacing="5">
-                            <TextBlock Text="Fullscreen" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Fullscreen" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}"/>
                             <ToggleSwitch IsChecked="{Binding Fullscreen}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
@@ -164,8 +164,8 @@
             <!-- Notifications (demo of the popup system) -->
             <Border Classes="card" Padding="20">
                 <StackPanel Spacing="10">
-                    <TextBlock Text="Notifications" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                    <TextBlock Text="Try the notification system: blocking dialogs queue one-by-one, non-blocking toasts open their own window." FontSize="11" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
+                    <TextBlock Text="Notifications" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                    <TextBlock Text="Try the notification system: blocking dialogs queue one-by-one, non-blocking toasts open their own window." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}" TextWrapping="Wrap"/>
                     <WrapPanel Orientation="Horizontal" Margin="0,6,0,0">
                         <Button Classes="subtle" Command="{Binding ShowBlockingCommand}" Margin="0,0,8,0" Padding="16,9">
                             <TextBlock Text="Blocking dialog" FontWeight="SemiBold"/>
@@ -183,9 +183,9 @@
             <!-- About -->
             <Border Classes="card" Padding="20">
                 <StackPanel Spacing="10">
-                    <TextBlock Text="About" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                    <TextBlock Text="{Binding AppVersion}" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"/>
-                    <TextBlock Text="UI prototype — backend services are stubbed." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                    <TextBlock Text="About" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource ColorBrushGray1}"/>
+                    <TextBlock Text="{Binding AppVersion}" FontSize="13" Foreground="{DynamicResource ColorBrushGray2}"/>
+                    <TextBlock Text="UI prototype — backend services are stubbed." FontSize="11" Foreground="{DynamicResource ColorBrushGray3}"/>
                     <Button Classes="accent" Command="{Binding SaveCommand}" Padding="20,9" HorizontalAlignment="Left" Margin="0,6,0,0">
                         <TextBlock Text="Save Settings" FontWeight="SemiBold"/>
                     </Button>

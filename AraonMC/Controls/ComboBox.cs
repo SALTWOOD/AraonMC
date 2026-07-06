@@ -252,14 +252,14 @@ public class ComboBox : TemplatedControl
             _selectedText.Text = text ?? PlaceholderText;
             _selectedText.FontWeight = FontWeight.SemiBold;
             _selectedText.Opacity = 1;
-            _selectedText.Foreground = Application.Current?.FindResource("TextPrimaryBrush") as IBrush;
+            _selectedText.Foreground = Application.Current?.FindResource("ColorBrushGray1") as IBrush;
         }
         else
         {
             _selectedText.Text = PlaceholderText;
             _selectedText.FontWeight = FontWeight.Medium;
             _selectedText.Opacity = 0.7;
-            _selectedText.Foreground = Application.Current?.FindResource("TextSecondaryBrush") as IBrush;
+            _selectedText.Foreground = Application.Current?.FindResource("ColorBrushGray2") as IBrush;
         }
     }
 

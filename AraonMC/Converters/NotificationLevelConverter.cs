@@ -35,10 +35,10 @@ public sealed class NotificationLevelConverter : IValueConverter
 
         return level switch
         {
-            NotificationLevel.Info => Brush("InfoBrush", Brushes.RoyalBlue),
-            NotificationLevel.Success => Brush("SuccessBrush", Brushes.LimeGreen),
-            NotificationLevel.Warning => Brush("WarningBrush", Brushes.Orange),
-            NotificationLevel.Error => Brush("ErrorBrush", Brushes.IndianRed),
+            NotificationLevel.Info => Brush("ColorBrushInfo", Brushes.RoyalBlue),
+            NotificationLevel.Success => Brush("ColorBrushSuccess", Brushes.LimeGreen),
+            NotificationLevel.Warning => Brush("ColorBrushWarning", Brushes.Orange),
+            NotificationLevel.Error => Brush("ColorBrushError", Brushes.IndianRed),
             _ => Brushes.SlateGray,
         };
     }

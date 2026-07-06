@@ -15,17 +15,17 @@
         WindowStartupLocation="CenterOwner">
 
     <Border CornerRadius="14"
-            Background="{DynamicResource SurfaceBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
+            Background="{DynamicResource ColorBrushGray5}"
+            BorderBrush="{DynamicResource ColorBrushGray4}"
             BorderThickness="1"
             ClipToBounds="True"
             Padding="20">
 
         <StackPanel Spacing="14">
             <TextBlock x:Name="DialogTitle" FontSize="15" FontWeight="Bold"
-                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                       Foreground="{DynamicResource ColorBrushGray1}"/>
             <TextBlock x:Name="DialogMessage" FontSize="13" TextWrapping="Wrap"
-                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+                       Foreground="{DynamicResource ColorBrushGray2}"/>
             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                 <Button Classes="subtle" Click="Cancel_Click" MinWidth="80">
                     <TextBlock Text="Cancel" FontWeight="SemiBold"/>

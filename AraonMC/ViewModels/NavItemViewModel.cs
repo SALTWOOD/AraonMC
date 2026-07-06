@@ -31,10 +31,10 @@ public partial class NavItemViewModel : ViewModelBase
     [ObservableProperty] private bool _isActive;
 
     public IBrush ItemBackground =>
-        IsActive ? Brush("AccentTintBrush") : Brushes.Transparent;
+        IsActive ? Brush("ColorBrushSemiTransparent") : Brushes.Transparent;
 
     public IBrush ItemForeground =>
-        IsActive ? Brush("AccentBrush") : Brush("TextSecondaryBrush");
+        IsActive ? Brush("ColorBrush4") : Brush("ColorBrushGray2");
 
     public FontWeight ItemWeight => IsActive ? FontWeight.SemiBold : FontWeight.Normal;
 

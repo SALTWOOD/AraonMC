@@ -1,68 +1,72 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Base / surfaces -->
-    <Color x:Key="BaseColor">#13131E</Color>
-    <Color x:Key="BackgroundColor">#1B1B2A</Color>
-    <Color x:Key="SurfaceColor">#252538</Color>
-    <Color x:Key="SurfaceAltColor">#2C2C44</Color>
-    <Color x:Key="SidebarColor">#16161F</Color>
-    <Color x:Key="BorderColor">#34344C</Color>
-    <Color x:Key="BorderSoftColor">#26263A</Color>
+    <!-- Grays -->
+    <Color x:Key="ColorObjectGray1">#ECECF5</Color>
+    <Color x:Key="ColorObjectGray2">#A0A0BC</Color>
+    <Color x:Key="ColorObjectGray3">#6C6C86</Color>
+    <Color x:Key="ColorObjectGray4">#34344C</Color>
+    <Color x:Key="ColorObjectGray5">#252538</Color>
+    <Color x:Key="ColorObjectGray6">#2C2C44</Color>
+    <Color x:Key="ColorObjectGray7">#26263A</Color>
+    <Color x:Key="ColorObjectGray8">#13131E</Color>
 
-    <!-- Text -->
-    <Color x:Key="TextPrimaryColor">#ECECF5</Color>
-    <Color x:Key="TextSecondaryColor">#A0A0BC</Color>
-    <Color x:Key="TextMutedColor">#6C6C86</Color>
+    <SolidColorBrush x:Key="ColorBrushGray1" Color="{StaticResource ColorObjectGray1}"/>
+    <SolidColorBrush x:Key="ColorBrushGray2" Color="{StaticResource ColorObjectGray2}"/>
+    <SolidColorBrush x:Key="ColorBrushGray3" Color="{StaticResource ColorObjectGray3}"/>
+    <SolidColorBrush x:Key="ColorBrushGray4" Color="{StaticResource ColorObjectGray4}"/>
+    <SolidColorBrush x:Key="ColorBrushGray5" Color="{StaticResource ColorObjectGray5}"/>
+    <SolidColorBrush x:Key="ColorBrushGray6" Color="{StaticResource ColorObjectGray6}"/>
+    <SolidColorBrush x:Key="ColorBrushGray7" Color="{StaticResource ColorObjectGray7}"/>
+    <SolidColorBrush x:Key="ColorBrushGray8" Color="{StaticResource ColorObjectGray8}"/>
 
-    <!-- Accent (amber) -->
-    <Color x:Key="AccentColor">#F59E0B</Color>
-    <Color x:Key="AccentHoverColor">#FBB133</Color>
-    <Color x:Key="AccentActiveColor">#D97706</Color>
-    <Color x:Key="AccentForegroundColor">#1B1B2A</Color>
-    <Color x:Key="AccentTintColor">#33F59E0B</Color>
+    <!-- Background / Base surfaces -->
+    <Color x:Key="ColorObjectBackground">#1B1B2A</Color>
+    <Color x:Key="ColorObjectHalfWhite">#55FFFFFF</Color>
+    <Color x:Key="ColorObjectSemiWhite">#BBFFFFFF</Color>
+    <Color x:Key="ColorObjectWhite">#FFFFFF</Color>
+    <Color x:Key="ColorObjectTransparent">#00FFFFFF</Color>
+    <Color x:Key="ColorObjectTransparentBackground">#D2FBFBFB</Color>
+
+    <SolidColorBrush x:Key="ColorBrushBackground" Color="{StaticResource ColorObjectBackground}"/>
+    <SolidColorBrush x:Key="ColorBrushHalfWhite" Color="{StaticResource ColorObjectHalfWhite}"/>
+    <SolidColorBrush x:Key="ColorBrushSemiWhite" Color="{StaticResource ColorObjectSemiWhite}"/>
+    <SolidColorBrush x:Key="ColorBrushWhite" Color="{StaticResource ColorObjectWhite}"/>
+    <SolidColorBrush x:Key="ColorBrushTransparent" Color="{StaticResource ColorObjectTransparent}"/>
+    <SolidColorBrush x:Key="ColorBrushTransparentBackground" Color="{StaticResource ColorObjectTransparentBackground}"/>
+
+    <!-- Accent (amber) - dynamic colors 1-4 -->
+    <Color x:Key="ColorObject1">#1B1B2A</Color>
+    <Color x:Key="ColorObject2">#D97706</Color>
+    <Color x:Key="ColorObject3">#FBB133</Color>
+    <Color x:Key="ColorObject4">#F59E0B</Color>
+    <Color x:Key="ColorObjectSemiTransparent">#33F59E0B</Color>
+
+    <SolidColorBrush x:Key="ColorBrush1" Color="{StaticResource ColorObject1}"/>
+    <SolidColorBrush x:Key="ColorBrush2" Color="{StaticResource ColorObject2}"/>
+    <SolidColorBrush x:Key="ColorBrush3" Color="{StaticResource ColorObject3}"/>
+    <SolidColorBrush x:Key="ColorBrush4" Color="{StaticResource ColorObject4}"/>
+    <SolidColorBrush x:Key="ColorBrushSemiTransparent" Color="{StaticResource ColorObjectSemiTransparent}"/>
 
     <!-- Status -->
-    <Color x:Key="OnlineColor">#4ADE80</Color>
-    <Color x:Key="DangerColor">#EF4444</Color>
-    <Color x:Key="DangerHoverColor">#DC2626</Color>
+    <Color x:Key="ColorObjectOnline">#4ADE80</Color>
+    <Color x:Key="ColorObjectDanger">#EF4444</Color>
+    <Color x:Key="ColorObjectDangerHover">#DC2626</Color>
+    <Color x:Key="ColorObjectSuccess">#4ADE80</Color>
+    <Color x:Key="ColorObjectWarning">#F59E0B</Color>
+    <Color x:Key="ColorObjectError">#EF4444</Color>
+    <Color x:Key="ColorObjectInfo">#3B82F6</Color>
 
-    <!-- Notification levels -->
-    <Color x:Key="InfoColor">#3B82F6</Color>
-    <Color x:Key="SuccessColor">#4ADE80</Color>
-    <Color x:Key="WarningColor">#F59E0B</Color>
-    <Color x:Key="ErrorColor">#EF4444</Color>
+    <SolidColorBrush x:Key="ColorBrushOnline" Color="{StaticResource ColorObjectOnline}"/>
+    <SolidColorBrush x:Key="ColorBrushDanger" Color="{StaticResource ColorObjectDanger}"/>
+    <SolidColorBrush x:Key="ColorBrushDangerHover" Color="{StaticResource ColorObjectDangerHover}"/>
+    <SolidColorBrush x:Key="ColorBrushSuccess" Color="{StaticResource ColorObjectSuccess}"/>
+    <SolidColorBrush x:Key="ColorBrushWarning" Color="{StaticResource ColorObjectWarning}"/>
+    <SolidColorBrush x:Key="ColorBrushError" Color="{StaticResource ColorObjectError}"/>
+    <SolidColorBrush x:Key="ColorBrushInfo" Color="{StaticResource ColorObjectInfo}"/>
 
     <!-- Corner radii (consumed by Fluent control templates + cards) -->
     <CornerRadius x:Key="ControlCornerRadius">8</CornerRadius>
     <CornerRadius x:Key="LargeCornerRadius">12</CornerRadius>
-
-    <!-- Brushes -->
-    <SolidColorBrush x:Key="BaseBrush" Color="{StaticResource BaseColor}"/>
-    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
-    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
-    <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}"/>
-    <SolidColorBrush x:Key="SidebarBrush" Color="{StaticResource SidebarColor}"/>
-    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
-    <SolidColorBrush x:Key="BorderSoftBrush" Color="{StaticResource BorderSoftColor}"/>
-
-    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
-    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
-    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}"/>
-
-    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
-    <SolidColorBrush x:Key="AccentHoverBrush" Color="{StaticResource AccentHoverColor}"/>
-    <SolidColorBrush x:Key="AccentActiveBrush" Color="{StaticResource AccentActiveColor}"/>
-    <SolidColorBrush x:Key="AccentForegroundBrush" Color="{StaticResource AccentForegroundColor}"/>
-    <SolidColorBrush x:Key="AccentTintBrush" Color="{StaticResource AccentTintColor}"/>
-
-    <SolidColorBrush x:Key="OnlineBrush" Color="{StaticResource OnlineColor}"/>
-    <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}"/>
-    <SolidColorBrush x:Key="DangerHoverBrush" Color="{StaticResource DangerHoverColor}"/>
-
-    <SolidColorBrush x:Key="InfoBrush" Color="{StaticResource InfoColor}"/>
-    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
-    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
-    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
 
 </ResourceDictionary>

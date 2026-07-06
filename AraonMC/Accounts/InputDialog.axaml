@@ -15,15 +15,15 @@
         WindowStartupLocation="CenterOwner">
 
     <Border CornerRadius="14"
-            Background="{DynamicResource SurfaceBrush}"
-            BorderBrush="{DynamicResource BorderBrush}"
+            Background="{DynamicResource ColorBrushGray5}"
+            BorderBrush="{DynamicResource ColorBrushGray4}"
             BorderThickness="1"
             ClipToBounds="True"
             Padding="20">
 
         <StackPanel Spacing="14">
             <TextBlock x:Name="DialogTitle" FontSize="15" FontWeight="Bold"
-                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                       Foreground="{DynamicResource ColorBrushGray1}"/>
             <TextBox x:Name="InputBox" FontSize="14" Padding="10,8"/>
             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                 <Button Classes="subtle" Click="Cancel_Click" MinWidth="80">

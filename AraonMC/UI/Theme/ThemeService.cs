@@ -140,7 +140,6 @@ public static partial class ThemeService
     {
         ApplyGrayResources();
         ApplyColorResources();
-        _ApplyAppResources();
         ColorModeChanged?.Invoke(IsDarkMode, CurrentTheme);
     }
 
@@ -150,39 +149,5 @@ public static partial class ThemeService
         ColorThemeChanged?.Invoke(CurrentTheme);
     }
 
-    private static void _ApplyAppResources()
-    {
-        var grays = IsDarkMode
-            ? (DarkGrayCache ??= _CalculateGrays(ToneProfiles.Dark))
-            : (LightGrayCache ??= _CalculateGrays(ToneProfiles.Light));
 
-        var (hue, lightAdj, chromaAdj) = GetCurrentThemeArgs();
-        var tone = CurrentTone;
-
-        grays[0].Apply("TextPrimaryColor", "TextPrimaryBrush");
-        grays[1].Apply("TextSecondaryColor", "TextSecondaryBrush");
-        grays[2].Apply("TextMutedColor", "TextMutedBrush");
-        grays[3].Apply("BorderColor", "BorderBrush");
-        grays[4].Apply("SurfaceColor", "SurfaceBrush");
-        grays[5].Apply("SurfaceAltColor", "SurfaceAltBrush");
-        grays[6].Apply("BorderSoftColor", "BorderSoftBrush");
-        grays[7].Apply("BaseColor", "BaseBrush");
-        grays[13].Apply("BackgroundColor", "BackgroundBrush");
-        grays[13].Apply("SidebarColor", "SidebarBrush");
-
-        var c = _CalculateColors(tone, (hue, lightAdj, chromaAdj));
-        c[3].Apply("AccentColor", "AccentBrush");
-        c[2].Apply("AccentHoverColor", "AccentHoverBrush");
-        c[1].Apply("AccentActiveColor", "AccentActiveBrush");
-        c[0].Apply("AccentForegroundColor", "AccentForegroundBrush");
-        c[8].Apply("AccentTintColor", "AccentTintBrush");
-
-        LabColor.FromLch(0.72, 0.2, 140).ToColorResource("Online").Apply("OnlineColor", "OnlineBrush");
-        LabColor.FromLch(0.72, 0.2, 140).ToColorResource("Success").Apply("SuccessColor", "SuccessBrush");
-        LabColor.FromLch(0.55, 0.25, 30).ToColorResource("Danger").Apply("DangerColor", "DangerBrush");
-        LabColor.FromLch(0.55, 0.25, 30).ToColorResource("Error").Apply("ErrorColor", "ErrorBrush");
-        LabColor.FromLch(0.65, 0.25, 30).ToColorResource("DangerHover").Apply("DangerHoverColor", "DangerHoverBrush");
-        LabColor.FromLch(0.55, 0.2, 260).ToColorResource("Info").Apply("InfoColor", "InfoBrush");
-        LabColor.FromLch(0.75, 0.2, 85).ToColorResource("Warning").Apply("WarningColor", "WarningBrush");
-    }
 }

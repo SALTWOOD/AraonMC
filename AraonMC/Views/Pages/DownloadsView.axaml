@@ -15,12 +15,12 @@
                     <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto">
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold"
-                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                       Foreground="{DynamicResource ColorBrushGray1}"/>
                             <TextBlock Text="{Binding Detail}" FontSize="11"
-                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                       Foreground="{DynamicResource ColorBrushGray3}"/>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="{Binding Status}" FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                   Foreground="{DynamicResource ColorBrush4}" VerticalAlignment="Center" Margin="0,0,14,0"/>
                         <Button Grid.Column="2" Classes="subtle" Padding="14,7"
                                 IsVisible="{Binding IsCancellable}"
                                 Command="{Binding $parent[UserControl].((pages:DownloadsViewModel)DataContext).CancelCommand}"
@@ -31,16 +31,16 @@
 
                     <ProgressBar Grid.Row="1" Value="{Binding ProgressPercent}" Maximum="100" Minimum="0"
                                  Height="8" CornerRadius="4" Margin="0,12,0,8"
-                                 Foreground="{DynamicResource AccentBrush}"/>
+                                 Foreground="{DynamicResource ColorBrush4}"/>
 
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="18">
-                        <TextBlock Text="{Binding ProgressText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding ProgressText}" FontSize="11" Foreground="{DynamicResource ColorBrushGray2}"/>
                         <TextBlock Text="{Binding ProgressPercent, StringFormat='\{0:0.0\}%'}" FontSize="11"
-                                   Foreground="{DynamicResource AccentBrush}"/>
+                                   Foreground="{DynamicResource ColorBrush4}"/>
                     </StackPanel>
 
                     <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" FontSize="11"
-                               Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"
+                               Foreground="{DynamicResource ColorBrushGray3}" TextWrapping="Wrap"
                                HorizontalAlignment="Right" MaxWidth="320"/>
                 </Grid>
             </Border>
@@ -50,7 +50,7 @@
     <Grid Margin="28,8,28,28" RowDefinitions="Auto,*">
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,4,0,18">
             <TextBlock Grid.Column="0" Text="Downloads" FontSize="20" FontWeight="Bold"
-                       Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                       Foreground="{DynamicResource ColorBrushGray1}" VerticalAlignment="Center"/>
             <Button Grid.Column="1" Classes="subtle" Command="{Binding ClearFinishedCommand}" Padding="16,9">
                 <TextBlock Text="Clear finished" FontWeight="SemiBold"/>
             </Button>
