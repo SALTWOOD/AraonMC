@@ -88,9 +88,9 @@
                                Foreground="{DynamicResource ColorBrushGray3}" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,8,0">
                     <Button Classes="chrome" Click="Minimize_Click" ToolTip.Tip="Minimize">
-                        <Path Data="{StaticResource minus}"/>
+                        <Rectangle Width="14" Height="2" RadiusX="1" RadiusY="1" Fill="{DynamicResource ColorBrushGray2}"/>
                     </Button>
                     <Button Classes="chrome" Click="Maximize_Click" ToolTip.Tip="Maximize">
                         <Path Data="{StaticResource square}"/>
