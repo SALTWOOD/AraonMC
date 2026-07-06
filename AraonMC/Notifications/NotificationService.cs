@@ -31,15 +31,18 @@ public sealed class NotificationService : INotificationService
 
     public Task ShowAsync(NotificationRequest request, CancellationToken ct = default)
     {
+        DebugLog.Info($"Notify: '{request.Title}' (level={request.Level}, mode={request.Mode}"
+            + (request.AutoDismiss is { } d ? $", auto-dismiss={d.TotalSeconds:F1}s" : "") + ").");
         // 窗口创建/显示必须在 UI 线程；调用方可能在后台线程（launcher、下载后台任务），统一切回 UI 线程。
         if (Dispatcher.UIThread.CheckAccess())
             return ShowCoreAsync(request, ct);
 
+        DebugLog.Info("Notify: caller is off the UI thread; marshalling ShowCore onto the UI thread.");
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         Dispatcher.UIThread.Post(async () =>
         {
             try { await ShowCoreAsync(request, ct).ConfigureAwait(true); }
-            catch (Exception ex) { tcs.SetException(ex); return; }
+            catch (Exception ex) { DebugLog.Error($"Notify: UI-thread show threw ({ex.GetType().Name}: {ex.Message})."); tcs.SetException(ex); return; }
             tcs.SetResult();
         });
         return tcs.Task;
@@ -49,18 +52,22 @@ public sealed class NotificationService : INotificationService
     {
         if (request.Mode == NotificationMode.NonBlocking)
         {
+            DebugLog.Info($"Notify: '{request.Title}' is non-blocking; spawning an independent toast.");
             SpawnIndependent(request);
             return;
         }
 
+        DebugLog.Info($"Notify: '{request.Title}' is blocking; waiting for the modal gate...");
         await _blockingGate.WaitAsync(ct).ConfigureAwait(true);
         try
         {
+            DebugLog.Info($"Notify: modal gate acquired for '{request.Title}'; showing dialog.");
             await ShowBlockingAsync(request);
         }
         finally
         {
             _blockingGate.Release();
+            DebugLog.Info($"Notify: modal gate released after '{request.Title}'.");
         }
     }
 
@@ -72,9 +79,15 @@ public sealed class NotificationService : INotificationService
             : WindowStartupLocation.CenterScreen;
 
         if (MainWindow is { } owner)
+        {
+            DebugLog.Info($"Notify: showing '{request.Title}' as modal dialog owned by main window.");
             await window.ShowDialog(owner);
+        }
         else
+        {
+            DebugLog.Warn($"Notify: no main window yet; '{request.Title}' degraded to a non-modal show.");
             window.Show(); // No owner yet (startup only): degrade to a non-blocking show.
+        }
     }
 
     private void SpawnIndependent(NotificationRequest request)
@@ -83,9 +96,11 @@ public sealed class NotificationService : INotificationService
         window.WindowStartupLocation = WindowStartupLocation.Manual;
         PositionCascade(window);
         window.Show();
+        DebugLog.Info($"Notify: toast '{request.Title}' shown at {window.Position}.");
 
         if (request.AutoDismiss is { } timeout && timeout > TimeSpan.Zero)
         {
+            DebugLog.Info($"Notify: '{request.Title}' will auto-dismiss in {timeout.TotalSeconds:F1}s.");
             ScheduleAutoDismiss(window, timeout);
         }
     }

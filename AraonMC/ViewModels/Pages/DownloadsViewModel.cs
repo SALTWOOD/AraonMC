@@ -19,9 +19,17 @@ public partial class DownloadsViewModel : PageViewModelBase
     [RelayCommand]
     private void Cancel(DownloadJob? job)
     {
-        if (job is not null) _manager.Cancel(job);
+        if (job is not null)
+        {
+            DebugLog.Info($"Downloads: user cancelled job '{job.Title}' (id={job.Id}).");
+            _manager.Cancel(job);
+        }
     }
 
     [RelayCommand]
-    private void ClearFinished() => _manager.ClearFinished();
+    private void ClearFinished()
+    {
+        DebugLog.Info("Downloads: user clicked 'clear finished'.");
+        _manager.ClearFinished();
+    }
 }

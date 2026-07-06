@@ -44,17 +44,27 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var notifications = new NotificationService();
+            DebugLog.Info("App: framework initialized; wiring up services (DI composition root).");
+            DebugLog.Info($"App: config root = '{ConfigPaths.GlobalRoot()}', default game directory = '{ConfigPaths.DefaultGameDirectory()}'.");
+            // NB: ConfigPaths.GameDirectory() reads Config.Game.GameDirectory, so it can only be logged AFTER Initialize below.
 
+            var notifications = new NotificationService();
+            DebugLog.Info("App: NotificationService ready.");
+
+            DebugLog.Info("App: initializing TOML config store...");
             CoreConfig.Initialize(new TomlConfigStore(
                 ConfigPaths.GlobalConfigFile(),
                 ConfigPaths.InstancesConfigFile(),
                 onWarning: msg => _ = notifications.ShowAsync(NotificationRequest.Toast(
                     "Config file reset", msg, NotificationLevel.Warning))));
+            DebugLog.Info($"App: config loaded — global='{ConfigPaths.GlobalConfigFile()}', instances='{ConfigPaths.InstancesConfigFile()}', active game directory='{ConfigPaths.GameDirectory()}'.");
 
             ThemeService.Initialize();
+            DebugLog.Info($"App: theme initialized — mode={CoreConfig.Theme.ColorMode}, theme={ThemeService.CurrentTheme}.");
 
             var deviceCodeUi = new AvaloniaDeviceCodeUI();
+            var hasMsClient = !string.IsNullOrWhiteSpace(Secrets.MsOAuthClientId);
+            DebugLog.Info($"App: MS OAuth client id configured = {hasMsClient}.");
             var authenticator = new MinecraftAuthenticator(new MinecraftAuthOptions
             {
                 ClientId = Secrets.MsOAuthClientId,
@@ -64,20 +74,29 @@ public partial class App : Application
             });
             var accountStore = new JsonAccountStore(notifications);
             var accounts = new AccountService(authenticator, deviceCodeUi, accountStore);
+            DebugLog.Info($"App: AccountService ready — {accounts.Accounts.Count} account(s), active='{accounts.GetActive()?.Username ?? "(none)"}'.");
 
             var http = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
+            DebugLog.Info($"App: HttpClient created (timeout={http.Timeout}).");
             var installer = InstallerFactory.Create(http);
+            DebugLog.Info($"App: Minecraft installer created.");
             IVersionList versions = new MinecraftVersionCatalog(new MojangManifestParser(http));
             var natives = new NativeLibraryExtractor(http);
+            DebugLog.Info("App: version catalog + native extractor ready.");
 
             var instances = new JsonInstanceRepository(notifications);
+            DebugLog.Info($"App: instance repository ready — {instances.GetAll().Count} instance(s).");
+
             var modrinth = new ModrinthClient(http);
             var curseForge = new CurseForgeClient(http, Secrets.CurseForgeApiKey);
+            DebugLog.Info($"App: CurseForge API key configured = {!string.IsNullOrWhiteSpace(Secrets.CurseForgeApiKey)}.");
             var resources = new ResourceRepository(modrinth, curseForge, notifications);
             var launcher = new MinecraftGameLauncher(accounts, natives, notifications);
             var downloads = new DownloadManager(installer, natives, http, notifications);
+            DebugLog.Info("App: resource repository, launcher, download manager wired up.");
 
             var window = new MainWindow();
+            DebugLog.Info("App: main window created; registering storage-provider pickers.");
             Func<Task<string?>> pickFolder = async () =>
             {
                 var result = await window.StorageProvider.OpenFolderPickerAsync(
@@ -105,6 +124,7 @@ public partial class App : Application
             };
             window.DataContext = new MainWindowViewModel(accounts, instances, versions, downloads, resources, launcher, notifications, pickFolder, pickSaveFile, pickVersion);
             desktop.MainWindow = window;
+            DebugLog.Info("App: main window data-bound and shown; startup complete. Ready.");
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -32,6 +32,7 @@ public sealed class JsonInstanceRepository : IInstanceRepository
         _notifications = notifications;
         _file = Path.Combine(ConfigPaths.GlobalRoot(), "instances.json");
         _rootDir = ConfigPaths.GameDirectory();
+        DebugLog.Info($"Instances: repository constructed — file='{_file}', shared gameDir='{_rootDir}'.");
         _instances = Load();
     }
 
@@ -53,11 +54,13 @@ public sealed class JsonInstanceRepository : IInstanceRepository
         };
         _instances.Add(instance);
         Save();
+        DebugLog.Info($"Instances: created instance '{instance.Name}' (id={instance.Id}, version='{instance.MinecraftVersion}', base='{instance.BaseMinecraftVersion}', loader={instance.Loader}); {_instances.Count} total.");
         return Task.FromResult(instance);
     }
 
     public Task SaveAsync(GameInstance instance, CancellationToken ct = default)
     {
+        DebugLog.Info($"Instances: explicit save requested for instance '{instance.Name}'.");
         Save();
         return Task.CompletedTask;
     }
@@ -66,8 +69,12 @@ public sealed class JsonInstanceRepository : IInstanceRepository
     {
         var targetName = ValidateInstanceName(newName);
         if (string.Equals(instance.MinecraftVersion, targetName, StringComparison.Ordinal))
+        {
+            DebugLog.Info($"Instances: rename no-op — '{instance.MinecraftVersion}' already matches the requested name.");
             return Task.CompletedTask;
+        }
         EnsureNameAvailable(targetName, except: instance);
+        DebugLog.Info($"Instances: renaming '{instance.MinecraftVersion}' → '{targetName}' (instance '{instance.Name}').");
 
         var oldName = instance.MinecraftVersion;
         var versionsDir = Path.Combine(instance.Path, "versions");
@@ -83,6 +90,7 @@ public sealed class JsonInstanceRepository : IInstanceRepository
             RenameIfExists(Path.Combine(oldDir, oldName + ".jar"), Path.Combine(oldDir, targetName + ".jar"));
             RenameIfExists(Path.Combine(oldDir, oldName + ".json"), Path.Combine(oldDir, targetName + ".json"));
             Directory.Move(oldDir, newDir);
+            DebugLog.Info($"Instances: moved version folder '{oldDir}' → '{newDir}'.");
         }
         else
         {
@@ -91,19 +99,29 @@ public sealed class JsonInstanceRepository : IInstanceRepository
 
         instance.MinecraftVersion = targetName;
         Save();
+        DebugLog.Info($"Instances: rename complete; instance '{instance.Name}' now maps to versions/'{targetName}'.");
         return Task.CompletedTask;
     }
 
     public Task DeleteAsync(GameInstance instance, CancellationToken ct = default)
     {
+        DebugLog.Info($"Instances: deleting instance '{instance.Name}' (id={instance.Id}, version='{instance.MinecraftVersion}').");
         _instances.RemoveAll(x => x.Id == instance.Id);
 
         // 实例名绑定到版本目录名；移除实例即移除 versions/<name>/。
         var versionDir = Path.Combine(instance.Path, "versions", instance.MinecraftVersion);
         if (Directory.Exists(versionDir))
+        {
             Directory.Delete(versionDir, recursive: true);
+            DebugLog.Info($"Instances: deleted version directory '{versionDir}' (recursive).");
+        }
+        else
+        {
+            DebugLog.Info($"Instances: version directory '{versionDir}' already absent; removed metadata only.");
+        }
 
         Save();
+        DebugLog.Info($"Instances: delete complete; {_instances.Count} instance(s) remain.");
         return Task.CompletedTask;
     }
 
@@ -111,19 +129,28 @@ public sealed class JsonInstanceRepository : IInstanceRepository
     {
         try
         {
-            if (!File.Exists(_file)) return new List<GameInstance>();
+            if (!File.Exists(_file))
+            {
+                DebugLog.Info("Instances: instances.json not found; starting with no instances.");
+                return new List<GameInstance>();
+            }
             var json = File.ReadAllText(_file);
+            DebugLog.Info($"Instances: read instances.json ({json.Length} char(s)); deserializing...");
             var loaded = JsonSerializer.Deserialize<List<GameInstance>>(json, JsonOptions) ?? new List<GameInstance>();
+            var migrated = 0;
             foreach (var i in loaded)
             {
                 // Migration for older instances: before this change MinecraftVersion was Mojang's id and no
                 // BaseMinecraftVersion existed, so treat the old value as both folder/name and base version.
-                if (string.IsNullOrWhiteSpace(i.BaseMinecraftVersion)) i.BaseMinecraftVersion = i.MinecraftVersion;
+                if (string.IsNullOrWhiteSpace(i.BaseMinecraftVersion)) { i.BaseMinecraftVersion = i.MinecraftVersion; migrated++; }
             }
+            DebugLog.Info($"Instances: loaded {loaded.Count} instance(s)"
+                + (migrated > 0 ? $" ({migrated} migrated to the BaseMinecraftVersion schema)." : "."));
             return loaded;
         }
         catch (Exception ex)
         {
+            DebugLog.Warn($"Instances: instances.json unreadable ({ex.GetType().Name}: {ex.Message}); starting with no instances.");
             _ = _notifications.ShowAsync(NotificationRequest.Toast(
                 "Instances file unreadable",
                 $"Could not read instances.json; starting with no instances: {ex.Message}",
@@ -141,6 +168,7 @@ public sealed class JsonInstanceRepository : IInstanceRepository
         var tmp = _file + ".tmp";
         File.WriteAllText(tmp, json);
         File.Move(tmp, _file, overwrite: true);
+        DebugLog.Info($"Instances: persisted {_instances.Count} instance(s) to instances.json ({json.Length} char(s)) via temp+rename.");
     }
 
     private static string ValidateInstanceName(string name)

@@ -69,6 +69,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public void Navigate(NavItemViewModel item)
     {
+        DebugLog.Info($"Nav: selecting sidebar item '{item.Label}'.");
         foreach (var n in NavItems) n.IsActive = n == item;
         CurrentPage = item.Page;
     }
@@ -76,22 +77,36 @@ public partial class MainWindowViewModel : ViewModelBase
     /// <summary>展示版本选择页（非常驻 nav；安装后跳转到 Downloads）。</summary>
     public void ShowVersionSelect()
     {
+        DebugLog.Info("Nav: opening the transient 'New Instance' (version select) page.");
         foreach (var n in NavItems) n.IsActive = false;
         CurrentPage = _versionSelectPage;
     }
 
     private void NavigateToDownloads()
     {
-        if (_downloadsItem is not null) Navigate(_downloadsItem);
+        if (_downloadsItem is not null)
+        {
+            DebugLog.Info("Nav: jumping to the Downloads page after install.");
+            Navigate(_downloadsItem);
+        }
     }
 
     [RelayCommand]
-    private void ToggleAccountSwitcher() => IsAccountSwitcherOpen = !IsAccountSwitcherOpen;
+    private void ToggleAccountSwitcher()
+    {
+        IsAccountSwitcherOpen = !IsAccountSwitcherOpen;
+        DebugLog.Info($"Nav: account switcher toggled → open={IsAccountSwitcherOpen}.");
+    }
 
     [RelayCommand]
     private async Task SwitchAccount(MinecraftAccount? account)
     {
-        if (account is null) return;
+        if (account is null)
+        {
+            DebugLog.Info("Nav: account switch requested with no target; ignored.");
+            return;
+        }
+        DebugLog.Info($"Nav: switching active account → '{account.Username}' (uuid={account.Uuid}).");
         await _accounts.SetActiveAsync(account);
         ActiveAccount = account;
         IsAccountSwitcherOpen = false;

@@ -36,6 +36,7 @@ public sealed class TomlConfigStore : IConfigStore
         _globalFile = globalFile;
         _instancesFile = instancesFile;
         _onWarning = onWarning;
+        DebugLog.Info($"Config: store constructed — global='{_globalFile}', instances='{_instancesFile}'.");
         Load();
     }
 
@@ -43,20 +44,32 @@ public sealed class TomlConfigStore : IConfigStore
 
     private void Load()
     {
+        DebugLog.Info("Config: loading TOML files...");
         _global = LoadFile(_globalFile);
         _instances = LoadFile(_instancesFile);
+        DebugLog.Info($"Config: load complete — global has {_global.Count} top-level section(s), instances has {_instances.Count}.");
     }
 
     private Dictionary<string, object?> LoadFile(string path)
     {
+        var name = Path.GetFileName(path);
         try
         {
-            if (!File.Exists(path)) return new Dictionary<string, object?>();
-            var doc = TomlSerializer.Deserialize<TomlTable>(File.ReadAllText(path));
-            return ToPlain(doc);
+            if (!File.Exists(path))
+            {
+                DebugLog.Info($"Config: '{name}' does not exist yet; using empty defaults.");
+                return new Dictionary<string, object?>();
+            }
+            var text = File.ReadAllText(path);
+            DebugLog.Info($"Config: '{name}' read ({text.Length} char(s)); deserializing TOML...");
+            var doc = TomlSerializer.Deserialize<TomlTable>(text);
+            var plain = ToPlain(doc);
+            DebugLog.Info($"Config: '{name}' parsed OK ({plain.Count} top-level section(s)).");
+            return plain;
         }
         catch (Exception ex)
         {
+            DebugLog.Warn($"Config: '{name}' failed to parse ({ex.GetType().Name}: {ex.Message}); backing up and resetting to defaults.");
             // Back up the corrupt file and start fresh from defaults.
             BackupCorrupt(path);
             _onWarning?.Invoke($"Config file {Path.GetFileName(path)} was corrupt and was reset to defaults: {ex.Message}");
@@ -68,7 +81,11 @@ public sealed class TomlConfigStore : IConfigStore
     {
         try
         {
-            if (!File.Exists(path)) return;
+            if (!File.Exists(path))
+            {
+                DebugLog.Info($"Config: nothing to back up — '{Path.GetFileName(path)}' is gone.");
+                return;
+            }
             var dir = Path.GetDirectoryName(path);
             var name = Path.GetFileNameWithoutExtension(path);
             var ext = Path.GetExtension(path);
@@ -78,11 +95,15 @@ public sealed class TomlConfigStore : IConfigStore
                 if (!File.Exists(backup))
                 {
                     File.Move(path, backup, overwrite: false);
+                    DebugLog.Info($"Config: corrupt file moved aside — '{Path.GetFileName(path)}' → '{Path.GetFileName(backup)}'.");
                     return;
                 }
             }
         }
-        catch { /* best-effort backup; never fail the app on it */ }
+        catch (Exception ex)
+        {
+            DebugLog.Warn($"Config: failed to back up corrupt '{Path.GetFileName(path)}' ({ex.GetType().Name}: {ex.Message}); continuing.");
+        }
     }
 
     // ---- IConfigStore ----------------------------------------------------------
@@ -105,12 +126,18 @@ public sealed class TomlConfigStore : IConfigStore
             var normalized = Normalize(value);
             if (scope == ConfigScope.Instance)
             {
-                if (instancePath is null) return;
+                if (instancePath is null)
+                {
+                    DebugLog.Warn($"Config: ignored instance-scope write to '{path}' — no instance path supplied.");
+                    return;
+                }
+                DebugLog.Info($"Config: set [instance '{instancePath}'] {path} = {FormatValue(normalized)}.");
                 SetInstance(path, instancePath, normalized);
                 Save(_instancesFile, _instances);
             }
             else
             {
+                DebugLog.Info($"Config: set [global] {path} = {FormatValue(normalized)}.");
                 SetByPath(_global, path, normalized);
                 Save(_globalFile, _global);
             }
@@ -192,6 +219,20 @@ public sealed class TomlConfigStore : IConfigStore
         var tmp = path + ".tmp";
         File.WriteAllText(tmp, text);
         File.Move(tmp, path, overwrite: true);
+        DebugLog.Info($"Config: saved '{Path.GetFileName(path)}' ({text.Length} char(s), {model.Count} section(s)) via temp+rename.");
+    }
+
+    /// <summary>Renders a stored value for logging: truncates long blobs, quotes strings, masks nothing.</summary>
+    private static string FormatValue(object? value)
+    {
+        switch (value)
+        {
+            case null: return "null";
+            case string s: return s.Length > 80 ? $"\"{s[..80]}…\" (+{s.Length - 80} char(s))" : $"\"{s}\"";
+            case bool b: return b ? "true" : "false";
+            case Enum e: return e.ToString();
+            default: return value.ToString() ?? value.GetType().Name;
+        }
     }
 
     private static TomlTable ToTomlTable(Dictionary<string, object?> src)

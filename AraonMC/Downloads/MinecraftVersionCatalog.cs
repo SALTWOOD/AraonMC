@@ -19,8 +19,13 @@ public sealed class MinecraftVersionCatalog(IManifestParser parser) : IVersionLi
 {
     public async Task<IReadOnlyList<MinecraftVersion>> GetVersionsAsync(CancellationToken ct = default)
     {
+        DebugLog.Info("Versions: fetching Mojang version manifest...");
         var index = await parser.GetVersionManifestIndexAsync(ct).ConfigureAwait(false);
-        return index.Versions
+        var latest = index.Latest;
+        DebugLog.Info($"Versions: manifest received — {index.Versions.Count} version(s) total"
+            + (latest is null ? "." : $", latest release='{latest.Release}', snapshot='{latest.Snapshot}'."));
+
+        var mapped = index.Versions
             .Select(e => new MinecraftVersion
             {
                 Id = e.Id,
@@ -28,6 +33,10 @@ public sealed class MinecraftVersionCatalog(IManifestParser parser) : IVersionLi
                 ReleaseTime = e.ReleaseTime,
             })
             .ToList();
+
+        var breakdown = string.Join(", ", mapped.GroupBy(v => v.Type).Select(g => $"{g.Key}={g.Count()}"));
+        DebugLog.Info($"Versions: parsed {mapped.Count} entries" + (string.IsNullOrEmpty(breakdown) ? "." : $" ({breakdown})."));
+        return mapped;
     }
 
     private static VersionType ParseType(string? t) => t switch

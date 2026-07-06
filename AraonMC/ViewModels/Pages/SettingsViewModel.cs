@@ -57,6 +57,7 @@ public partial class SettingsViewModel : PageViewModelBase
     partial void OnSelectedColorModeOptionChanged(Option<ColorMode>? value)
     {
         if (value is null) return;
+        DebugLog.Info($"Settings: color mode set to {value.Value}.");
         CoreConfig.Theme.ColorMode = value.Value;
         ThemeService.RefreshColorMode();
     }
@@ -64,6 +65,7 @@ public partial class SettingsViewModel : PageViewModelBase
     partial void OnSelectedColorThemeOptionChanged(Option<ColorTheme>? value)
     {
         if (value is null) return;
+        DebugLog.Info($"Settings: color theme set to {value.Value}.");
         ThemeService.CurrentTheme = value.Value;
         ThemeService.RefreshTheme();
     }
@@ -91,8 +93,17 @@ public partial class SettingsViewModel : PageViewModelBase
     [RelayCommand]
     private async Task BrowseGameDirectoryAsync()
     {
+        DebugLog.Info("Settings: opening folder picker for game directory...");
         var picked = await _pickFolder();
-        if (picked is not null) GameDirectory = picked;
+        if (picked is not null)
+        {
+            GameDirectory = picked;
+            DebugLog.Info($"Settings: game directory set to '{picked}'.");
+        }
+        else
+        {
+            DebugLog.Info("Settings: game-directory folder picker cancelled.");
+        }
     }
 
     [ObservableProperty] private double _windowWidth = 1280;
@@ -102,6 +113,7 @@ public partial class SettingsViewModel : PageViewModelBase
     [RelayCommand]
     private void Save()
     {
+        DebugLog.Info("Settings: 'Save' pressed (values already bind live to the running config; persistence is a no-op for now).");
         // Persistence backend not implemented — values are UI-only.
     }
 

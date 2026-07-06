@@ -48,11 +48,17 @@ public partial class InstancesViewModel : PageViewModelBase
     private async Task PlayAsync(GameInstance? instance)
     {
         if (instance is null) return;
-        await _launcher.LaunchAsync(instance, _accounts.GetActive()!);
+        var active = _accounts.GetActive()!;
+        DebugLog.Info($"Instances: Play '{instance.Name}' (version='{instance.MinecraftVersion}') with account '{active?.Username ?? "(none)"}'.");
+        await _launcher.LaunchAsync(instance, active);
     }
 
     [RelayCommand]
-    private void New() => _showVersionSelect();
+    private void New()
+    {
+        DebugLog.Info("Instances: 'New instance' pressed; opening version select.");
+        _showVersionSelect();
+    }
 
     [RelayCommand]
     private async Task RenameAsync(GameInstance? instance)

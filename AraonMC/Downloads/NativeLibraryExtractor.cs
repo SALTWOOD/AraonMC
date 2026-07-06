@@ -27,28 +27,53 @@ public sealed class NativeLibraryExtractor
     public async Task EnsureDownloadedAsync(string gameDir, string versionId, CancellationToken ct = default)
     {
         var librariesRoot = Path.Combine(gameDir, "libraries");
-        foreach (var (native, _) in ResolveNativeLibs(gameDir, versionId))
+        var natives = ResolveNativeLibs(gameDir, versionId);
+        DebugLog.Info($"Natives(install): {natives.Count} native library(ies) to ensure for version '{versionId}' under '{librariesRoot}'.");
+
+        var downloaded = 0;
+        var alreadyPresent = 0;
+        foreach (var (native, _) in natives)
         {
-            if (string.IsNullOrEmpty(native.Url) || string.IsNullOrEmpty(native.Path)) continue;
-            await DownloadIfMissingAsync(native.Url, Path.Combine(librariesRoot, native.Path), native.Sha1, ct)
-                .ConfigureAwait(false);
+            if (string.IsNullOrEmpty(native.Url) || string.IsNullOrEmpty(native.Path))
+            {
+                DebugLog.Warn($"Natives(install): a native entry has empty url/path (path='{native.Path}'); skipping.");
+                continue;
+            }
+            if (await DownloadIfMissingAsync(native.Url, Path.Combine(librariesRoot, native.Path), native.Sha1, ct)
+                    .ConfigureAwait(false))
+                downloaded++;
+            else
+                alreadyPresent++;
         }
+        DebugLog.Info($"Natives(install): done — downloaded={downloaded}, already-present={alreadyPresent}.");
     }
 
     /// <summary>启动期：把 native jar 解压到 <paramref name="targetDir"/>（先清空重建），按 extract.exclude 跳过排除项。</summary>
     public void ExtractTo(string gameDir, string versionId, string targetDir)
     {
         var librariesRoot = Path.Combine(gameDir, "libraries");
+        DebugLog.Info($"Natives(launch): preparing extraction target '{targetDir}' for version '{versionId}'.");
 
-        if (Directory.Exists(targetDir)) Directory.Delete(targetDir, recursive: true);
+        if (Directory.Exists(targetDir))
+        {
+            Directory.Delete(targetDir, recursive: true);
+            DebugLog.Info($"Natives(launch): removed stale target dir '{targetDir}'.");
+        }
         Directory.CreateDirectory(targetDir);
 
-        foreach (var (native, lib) in ResolveNativeLibs(gameDir, versionId))
+        var natives = ResolveNativeLibs(gameDir, versionId);
+        var totalFiles = 0;
+        foreach (var (native, lib) in natives)
         {
             var jarPath = Path.Combine(librariesRoot, native.Path);
-            if (!File.Exists(jarPath)) continue;
-            ExtractNative(jarPath, targetDir, lib.Extract?.Exclude);
+            if (!File.Exists(jarPath))
+            {
+                DebugLog.Warn($"Natives(launch): native jar missing on disk, skipping: '{jarPath}'.");
+                continue;
+            }
+            totalFiles += ExtractNative(jarPath, targetDir, lib.Extract?.Exclude);
         }
+        DebugLog.Info($"Natives(launch): extracted {totalFiles} native file(s) from {natives.Count} jar(s) into '{targetDir}'.");
     }
 
     // ---- helpers ----
@@ -56,24 +81,32 @@ public sealed class NativeLibraryExtractor
     private static List<(VersionArtifact Native, VersionLibrary Lib)> ResolveNativeLibs(string gameDir, string versionId)
     {
         var jsonPath = Path.Combine(gameDir, "versions", versionId, versionId + ".json");
+        DebugLog.Info($"Natives: reading version metadata '{jsonPath}'.");
         var meta = VersionMetadataReader.Read(File.ReadAllText(jsonPath));
         var resolved = new ClasspathResolver(new RuleEvaluator()).Resolve(meta.Libraries, new HashSet<string>());
+        DebugLog.Info($"Natives: version declares {meta.Libraries.Count} librar(y/ies); {resolved.Count} apply to this platform.");
 
         var list = new List<(VersionArtifact, VersionLibrary)>(capacity: 8);
         foreach (var r in resolved)
             if (r.Native is { } native && !string.IsNullOrEmpty(native.Path))
                 list.Add((native, r.Library));
+        DebugLog.Info($"Natives: {list.Count} native classifier(s) selected for the current platform.");
         return list;
     }
 
-    private async Task DownloadIfMissingAsync(string url, string dest, string expectedSha1, CancellationToken ct)
+    /// <returns><c>true</c> if the file was downloaded; <c>false</c> if it already existed with a matching sha1.</returns>
+    private async Task<bool> DownloadIfMissingAsync(string url, string dest, string expectedSha1, CancellationToken ct)
     {
         if (!string.IsNullOrEmpty(expectedSha1) && File.Exists(dest) && Sha1Matches(dest, expectedSha1))
-            return;
+        {
+            DebugLog.Info($"Natives: already present and sha1-verified, skipping: '{dest}'.");
+            return false;
+        }
 
         var dir = Path.GetDirectoryName(dest);
         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
 
+        DebugLog.Info($"Natives: downloading native → '{dest}' from {url}...");
         var tmp = dest + ".tmp";
         try
         {
@@ -84,10 +117,14 @@ public sealed class NativeLibraryExtractor
             await using (var dst = File.Create(tmp))
                 await src.CopyToAsync(dst, ct).ConfigureAwait(false);
 
+            var bytes = new FileInfo(tmp).Length;
             if (!string.IsNullOrEmpty(expectedSha1) && !Sha1Matches(tmp, expectedSha1))
                 throw new InvalidDataException($"sha1 mismatch for native '{url}'.");
 
+            DebugLog.Info($"Natives: downloaded {bytes:N0} byte(s) for '{Path.GetFileName(dest)}'"
+                + (string.IsNullOrEmpty(expectedSha1) ? " (no sha1 to verify)." : "; sha1 verified."));
             File.Move(tmp, dest, overwrite: true);
+            return true;
         }
         finally
         {
@@ -95,21 +132,30 @@ public sealed class NativeLibraryExtractor
         }
     }
 
-    private static void ExtractNative(string jarPath, string nativesDir, IReadOnlyList<string>? excludes)
+    private static int ExtractNative(string jarPath, string nativesDir, IReadOnlyList<string>? excludes)
     {
         using var archive = ZipFile.OpenRead(jarPath);
+        var extracted = 0;
+        var excluded = 0;
         foreach (var entry in archive.Entries)
         {
             if (entry.FullName.EndsWith('/')) continue;
             if (excludes is not null
                 && excludes.Any(e => entry.FullName.StartsWith(e, StringComparison.OrdinalIgnoreCase)))
+            {
+                excluded++;
                 continue;
+            }
 
             var dest = Path.Combine(nativesDir, entry.FullName);
             var entryDir = Path.GetDirectoryName(dest);
             if (!string.IsNullOrEmpty(entryDir)) Directory.CreateDirectory(entryDir);
             entry.ExtractToFile(dest, overwrite: true);
+            extracted++;
         }
+        DebugLog.Info($"Natives(launch): '{Path.GetFileName(jarPath)}' → {extracted} file(s) extracted"
+            + (excluded > 0 ? $", {excluded} excluded by extract.rules." : "."));
+        return extracted;
     }
 
     private static bool Sha1Matches(string path, string expected)

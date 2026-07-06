@@ -47,13 +47,16 @@ public partial class VersionSelectViewModel : PageViewModelBase
     {
         try
         {
+            DebugLog.Info("VersionSelect: fetching available Minecraft versions...");
             var list = await _versions.GetVersionsAsync();
             _all.Clear();
             _all.AddRange(list);
             ApplyFilter();
+            DebugLog.Info($"VersionSelect: loaded {list.Count} version(s); {Items.Count} shown after the release filter.");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            DebugLog.Error($"VersionSelect: failed to load versions — {ex.GetType().Name}: {ex.Message}");
             // TODO: 通过 INotificationService 上报；当前静默，避免 ctor 抛异常。
         }
     }
@@ -62,11 +65,17 @@ public partial class VersionSelectViewModel : PageViewModelBase
     private async Task InstallAsync(MinecraftVersion? version)
     {
         if (version is null) return;
+        DebugLog.Info($"VersionSelect: install requested for version '{version.Id}' (type={version.Type}).");
 
         // Confirm the instance name (and loader, a placeholder for now) before installing.
         var name = await InstallConfirmWindow.ShowAsync(version, _repo);
-        if (string.IsNullOrWhiteSpace(name)) return; // cancelled.
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            DebugLog.Info("VersionSelect: install cancelled at the name-confirm dialog.");
+            return; // cancelled.
+        }
 
+        DebugLog.Info($"VersionSelect: creating instance '{name}' for version '{version.Id}' and enqueuing the install.");
         var instance = await _repo.CreateAsync(name, version, LoaderType.Vanilla);
         await _downloads.EnqueueAsync(instance);
         _onInstalled();

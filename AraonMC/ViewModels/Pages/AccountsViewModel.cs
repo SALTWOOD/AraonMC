@@ -30,25 +30,32 @@ public partial class AccountsViewModel : PageViewModelBase
     [RelayCommand]
     private async Task AddMicrosoftAsync()
     {
+        DebugLog.Info("Accounts: 'Add Microsoft' pressed; starting device-code login.");
         try { await _service.LoginMicrosoftAsync(); }
-        catch (OperationCanceledException) { /* user cancelled the device-code flow */ }
-        catch (MinecraftAuthException ex) { await NotifyAuthErrorAsync(ex); }
-        catch (Exception ex) { await NotifyAsync("Login failed", ex.Message, NotificationLevel.Error); }
+        catch (OperationCanceledException) { DebugLog.Info("Accounts: Microsoft login cancelled by the user."); /* user cancelled the device-code flow */ }
+        catch (MinecraftAuthException ex) { DebugLog.Warn($"Accounts: Microsoft login rejected ({ex.Kind}) — {ex.Message}."); await NotifyAuthErrorAsync(ex); }
+        catch (Exception ex) { DebugLog.Error($"Accounts: Microsoft login threw {ex.GetType().Name}: {ex.Message}"); await NotifyAsync("Login failed", ex.Message, NotificationLevel.Error); }
     }
 
     [RelayCommand]
     private async Task AddOfflineAsync()
     {
         var name = await InputDialog.PromptAsync("Add offline account", "Username");
-        if (string.IsNullOrWhiteSpace(name)) return;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            DebugLog.Info("Accounts: offline-add cancelled at the name prompt.");
+            return;
+        }
+        DebugLog.Info($"Accounts: adding offline account '{name.Trim()}'.");
         try { await _service.AddOfflineAsync(name); }
-        catch (Exception ex) { await NotifyAsync("Add failed", ex.Message, NotificationLevel.Error); }
+        catch (Exception ex) { DebugLog.Error($"Accounts: offline add failed — {ex.GetType().Name}: {ex.Message}"); await NotifyAsync("Add failed", ex.Message, NotificationLevel.Error); }
     }
 
     [RelayCommand]
     private async Task SetActiveAsync(MinecraftAccount? account)
     {
         if (account is null) return;
+        DebugLog.Info($"Accounts: setting active account → '{account.Username}'.");
         await _service.SetActiveAsync(account);
     }
 
@@ -56,6 +63,7 @@ public partial class AccountsViewModel : PageViewModelBase
     private async Task RemoveAsync(MinecraftAccount? account)
     {
         if (account is null) return;
+        DebugLog.Info($"Accounts: removing account '{account.Username}'.");
         await _service.RemoveAsync(account);
     }
 

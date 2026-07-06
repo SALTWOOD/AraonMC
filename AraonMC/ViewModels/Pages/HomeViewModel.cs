@@ -35,8 +35,14 @@ public partial class HomeViewModel : PageViewModelBase
     [RelayCommand]
     private async Task PlayAsync()
     {
-        if (SelectedInstance is null) return;
-        await _launcher.LaunchAsync(SelectedInstance, _accounts.GetActive()!);
+        if (SelectedInstance is null)
+        {
+            DebugLog.Info("Home: Play pressed but no instance is selected.");
+            return;
+        }
+        var active = _accounts.GetActive();
+        DebugLog.Info($"Home: Play '{SelectedInstance.Name}' (version='{SelectedInstance.MinecraftVersion}') with account '{active?.Username ?? "(none)"}'.");
+        await _launcher.LaunchAsync(SelectedInstance, active!);
     }
 
     private static IEnumerable<NewsItem> BuildNews() =>
