@@ -27,6 +27,9 @@ public sealed class RemoteImage : Image
     public static readonly StyledProperty<string?> UrlProperty =
         AvaloniaProperty.Register<RemoteImage, string?>(nameof(Url));
 
+    public static readonly StyledProperty<bool> IsLoadedProperty =
+        AvaloniaProperty.Register<RemoteImage, bool>(nameof(IsLoaded));
+
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(15) };
 
     // null entry = a URL known to have failed, so we don't refetch on every scroll.
@@ -46,10 +49,17 @@ public sealed class RemoteImage : Image
         set => SetValue(UrlProperty, value);
     }
 
+    public new bool IsLoaded
+    {
+        get => GetValue(IsLoadedProperty);
+        private set => SetValue(IsLoadedProperty, value);
+    }
+
     private void OnUrlChanged(AvaloniaPropertyChangedEventArgs e)
     {
         // Clear the displayed bitmap; it's set again when the new URL resolves (or stays null on failure).
         Source = null;
+        IsLoaded = false;
         _cts?.Cancel();
         var url = (string?)e.NewValue;
         if (string.IsNullOrWhiteSpace(url)) return;
@@ -81,7 +91,11 @@ public sealed class RemoteImage : Image
         if (ct.IsCancellationRequested || bmp is null) return;
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (!ct.IsCancellationRequested) Source = bmp;
+            if (!ct.IsCancellationRequested)
+            {
+                Source = bmp;
+                IsLoaded = true;
+            }
         });
     }
 }
