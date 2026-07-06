@@ -247,8 +247,8 @@ public class ComboBox : TemplatedControl
             UpdateSelectedText();
     }
 
-    private void OnThemeChanged(bool isDarkMode, ColorTheme theme) => UpdateSelectedText();
-    private void OnThemeChanged(ColorTheme theme) => UpdateSelectedText();
+    private void OnThemeChanged(bool isDarkMode, ConfigEnums.ColorTheme theme) => UpdateSelectedText();
+    private void OnThemeChanged(ConfigEnums.ColorTheme theme) => UpdateSelectedText();
 
     private void UpdateSelectedText()
     {

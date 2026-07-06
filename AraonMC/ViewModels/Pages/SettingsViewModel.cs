@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AraonMC.Core.Application.Notifications;
 using AraonMC.Core.Config;
 using AraonMC.UI.Theme;
@@ -24,19 +20,19 @@ public partial class SettingsViewModel : PageViewModelBase
 
         ColorModeOptions =
         [
-            new Option<ColorMode>("Light", ColorMode.Light),
-            new Option<ColorMode>("Dark", ColorMode.Dark),
-            new Option<ColorMode>("System", ColorMode.System),
+            new Option<ConfigEnums.ColorMode>("Light", ConfigEnums.ColorMode.Light),
+            new Option<ConfigEnums.ColorMode>("Dark", ConfigEnums.ColorMode.Dark),
+            new Option<ConfigEnums.ColorMode>("System", ConfigEnums.ColorMode.System),
         ];
         ColorThemeOptions =
         [
-            new Option<ColorTheme>("Sky Blue", ColorTheme.SkyBlue),
-            new Option<ColorTheme>("Amber", ColorTheme.Amber),
+            new Option<ConfigEnums.ColorTheme>("Sky Blue", ConfigEnums.ColorTheme.SkyBlue),
+            new Option<ConfigEnums.ColorTheme>("Amber", ConfigEnums.ColorTheme.Amber),
         ];
 
-        SelectedColorModeOption = ColorModeOptions.First(o => o.Value == CoreConfig.Theme.ColorMode);
+        _selectedColorModeOption = ColorModeOptions.First(o => o.Value == CoreConfig.Theme.ColorMode);
         var currentTheme = ThemeService.CurrentTheme;
-        SelectedColorThemeOption = ColorThemeOptions.First(o => o.Value == currentTheme);
+        _selectedColorThemeOption = ColorThemeOptions.First(o => o.Value == currentTheme);
     }
 
     public string AppVersion => "AraonMC 0.1.0 (dev)";
@@ -48,20 +44,20 @@ public partial class SettingsViewModel : PageViewModelBase
     [ObservableProperty] private bool _checkUpdatesOnStart = true;
 
     // Theme
-    public IReadOnlyList<Option<ColorMode>> ColorModeOptions { get; }
-    public IReadOnlyList<Option<ColorTheme>> ColorThemeOptions { get; }
+    public IReadOnlyList<Option<ConfigEnums.ColorMode>> ColorModeOptions { get; }
+    public IReadOnlyList<Option<ConfigEnums.ColorTheme>> ColorThemeOptions { get; }
 
-    [ObservableProperty] private Option<ColorMode>? _selectedColorModeOption;
-    [ObservableProperty] private Option<ColorTheme>? _selectedColorThemeOption;
+    [ObservableProperty] private Option<ConfigEnums.ColorMode>? _selectedColorModeOption;
+    [ObservableProperty] private Option<ConfigEnums.ColorTheme>? _selectedColorThemeOption;
 
-    partial void OnSelectedColorModeOptionChanged(Option<ColorMode>? value)
+    partial void OnSelectedColorModeOptionChanged(Option<ConfigEnums.ColorMode>? value)
     {
         if (value is null) return;
         CoreConfig.Theme.ColorMode = value.Value;
         ThemeService.RefreshColorMode();
     }
 
-    partial void OnSelectedColorThemeOptionChanged(Option<ColorTheme>? value)
+    partial void OnSelectedColorThemeOptionChanged(Option<ConfigEnums.ColorTheme>? value)
     {
         if (value is null) return;
         ThemeService.CurrentTheme = value.Value;
