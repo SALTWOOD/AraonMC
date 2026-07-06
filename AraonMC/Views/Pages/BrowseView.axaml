@@ -23,12 +23,11 @@
                         <Border Grid.Column="0" Width="44" Height="44" CornerRadius="10"
                                 Background="White" ClipToBounds="True">
                             <Panel>
-                                <!-- Initials fallback (visible until/unless the icon loads) -->
                                 <TextBlock Text="{Binding IconKey}" FontSize="15" FontWeight="Bold"
                                            Foreground="{DynamicResource ColorBrush1}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <!-- Layered on top: transparent until the bitmap loads -->
-                                <controls:RemoteImage Url="{Binding IconUrl}" Stretch="UniformToFill"/>
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           IsVisible="{Binding IsLoaded, ElementName=IconImage, Converter={x:Static conv:BoolInvertConverter.Instance}}"/>
+                                <controls:RemoteImage x:Name="IconImage" Url="{Binding IconUrl}" Stretch="UniformToFill"/>
                             </Panel>
                         </Border>
                         <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="2" VerticalAlignment="Center">
