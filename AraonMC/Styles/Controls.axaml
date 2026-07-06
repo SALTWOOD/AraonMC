@@ -140,7 +140,7 @@
     <Style Selector="controls|ComboBox">
         <Setter Property="Background" Value="{DynamicResource ColorBrushGray5}"/>
         <Setter Property="Foreground" Value="{DynamicResource ColorBrushGray1}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushGray7}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushGray4}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="MinHeight" Value="36"/>
         <Setter Property="Template">

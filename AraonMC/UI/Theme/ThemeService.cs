@@ -3,8 +3,8 @@ using CoreConfig = AraonMC.Core.Config.Config;
 
 namespace AraonMC.UI.Theme;
 
-public delegate void ColorModeChangedEvent(bool isDarkMode, ColorTheme theme);
-public delegate void ColorThemeChangedEvent(ColorTheme theme);
+public delegate void ColorModeChangedEvent(bool isDarkMode, ConfigEnums.ColorTheme theme);
+public delegate void ColorThemeChangedEvent(ConfigEnums.ColorTheme theme);
 
 public static partial class ThemeService
 {
@@ -31,15 +31,15 @@ public static partial class ThemeService
 
     private static bool _IsDarkMode() => CoreConfig.Theme.ColorMode switch
     {
-        ColorMode.Light => false,
-        ColorMode.Dark => true,
-        ColorMode.System => OperatingSystem.IsWindows() && SystemThemeHelper.IsSystemInDarkMode(),
+        ConfigEnums.ColorMode.Light => false,
+        ConfigEnums.ColorMode.Dark => true,
+        ConfigEnums.ColorMode.System => OperatingSystem.IsWindows() && SystemThemeHelper.IsSystemInDarkMode(),
         _ => false
     };
 
     public static ToneProfile CurrentTone => IsDarkMode ? ToneProfiles.Dark : ToneProfiles.Light;
 
-    public static ColorTheme CurrentTheme
+    public static ConfigEnums.ColorTheme CurrentTheme
     {
         get
         {
@@ -61,8 +61,8 @@ public static partial class ThemeService
         var theme = CurrentTheme;
         return theme switch
         {
-            ColorTheme.SkyBlue => (235, 0.36, 0.2),
-            ColorTheme.Amber => (38, 0.15, 0.1),
+            ConfigEnums.ColorTheme.SkyBlue => (235, 0.36, 0.2),
+            ConfigEnums.ColorTheme.Amber => (38, 0.15, 0.1),
             _ => (235, 0.36, 0.2)
         };
     }

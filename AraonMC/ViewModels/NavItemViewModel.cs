@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using AraonMC.Core.Config;
+using AraonMC.UI.Theme;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -20,6 +22,21 @@ public partial class NavItemViewModel : ViewModelBase
         _iconKey = iconKey;
         Label = label;
         Page = page;
+
+        ThemeService.ColorModeChanged += OnThemeColorModeChanged;
+        ThemeService.ColorThemeChanged += OnThemeColorThemeChanged;
+    }
+
+    private void OnThemeColorModeChanged(bool isDarkMode, ConfigEnums.ColorTheme theme)
+    {
+        OnPropertyChanged(nameof(ItemBackground));
+        OnPropertyChanged(nameof(ItemForeground));
+    }
+
+    private void OnThemeColorThemeChanged(ConfigEnums.ColorTheme theme)
+    {
+        OnPropertyChanged(nameof(ItemBackground));
+        OnPropertyChanged(nameof(ItemForeground));
     }
 
     public string Label { get; }

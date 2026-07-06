@@ -24,14 +24,14 @@ public partial class SettingsViewModel : PageViewModelBase
 
         ColorModeOptions =
         [
-            new Option<ColorMode>("Light", ColorMode.Light),
-            new Option<ColorMode>("Dark", ColorMode.Dark),
-            new Option<ColorMode>("System", ColorMode.System),
+            new Option<ConfigEnums.ColorMode>("Light", ConfigEnums.ColorMode.Light),
+            new Option<ConfigEnums.ColorMode>("Dark", ConfigEnums.ColorMode.Dark),
+            new Option<ConfigEnums.ColorMode>("System", ConfigEnums.ColorMode.System),
         ];
         ColorThemeOptions =
         [
-            new Option<ColorTheme>("Sky Blue", ColorTheme.SkyBlue),
-            new Option<ColorTheme>("Amber", ColorTheme.Amber),
+            new Option<ConfigEnums.ColorTheme>("Sky Blue", ConfigEnums.ColorTheme.SkyBlue),
+            new Option<ConfigEnums.ColorTheme>("Amber", ConfigEnums.ColorTheme.Amber),
         ];
 
         SelectedColorModeOption = ColorModeOptions.First(o => o.Value == CoreConfig.Theme.ColorMode);
@@ -48,21 +48,24 @@ public partial class SettingsViewModel : PageViewModelBase
     [ObservableProperty] private bool _checkUpdatesOnStart = true;
 
     // Theme
-    public IReadOnlyList<Option<ColorMode>> ColorModeOptions { get; }
-    public IReadOnlyList<Option<ColorTheme>> ColorThemeOptions { get; }
+    public IReadOnlyList<Option<ConfigEnums.ColorMode>> ColorModeOptions { get; }
+    public IReadOnlyList<Option<ConfigEnums.ColorTheme>> ColorThemeOptions { get; }
 
-    [ObservableProperty] private Option<ColorMode>? _selectedColorModeOption;
-    [ObservableProperty] private Option<ColorTheme>? _selectedColorThemeOption;
+    [ObservableProperty] private Option<ConfigEnums.ColorMode>? _selectedColorModeOption;
+    [ObservableProperty] private Option<ConfigEnums.ColorTheme>? _selectedColorThemeOption;
 
-    partial void OnSelectedColorModeOptionChanged(Option<ColorMode>? value)
+    partial void OnSelectedColorModeOptionChanged(Option<ConfigEnums.ColorMode>? value)
     {
         if (value is null) return;
         DebugLog.Info($"Settings: color mode set to {value.Value}.");
         CoreConfig.Theme.ColorMode = value.Value;
         ThemeService.RefreshColorMode();
+        
+        if (SelectedColorThemeOption?.Value != ThemeService.CurrentTheme)
+            SelectedColorThemeOption = ColorThemeOptions.First(o => o.Value == ThemeService.CurrentTheme);
     }
 
-    partial void OnSelectedColorThemeOptionChanged(Option<ColorTheme>? value)
+    partial void OnSelectedColorThemeOptionChanged(Option<ConfigEnums.ColorTheme>? value)
     {
         if (value is null) return;
         DebugLog.Info($"Settings: color theme set to {value.Value}.");
