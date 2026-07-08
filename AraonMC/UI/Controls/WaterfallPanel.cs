@@ -60,6 +60,7 @@ public class WaterfallPanel : Panel
                 maxHeight = _columnHeights[i];
         }
 
+        maxHeight = Children.Count > 0 ? Math.Max(0, maxHeight - RowSpacing) : 0;
         return new Size(panelWidth, maxHeight);
     }
 

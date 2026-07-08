@@ -167,16 +167,23 @@
                          Foreground="{DynamicResource ColorBrush4}"/>
         </StackPanel>
 
-        <!-- Row 3: cards grid (+ empty hint) -->
+        <!-- Row 3: cards grid (+ empty hint + pagination at bottom) -->
         <Grid Grid.Row="3">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-                <ItemsControl ItemsSource="{Binding Items}" ItemTemplate="{StaticResource ResourceCardTemplate}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <controls:WaterfallPanel ColumnWidth="300" ColumnSpacing="18" RowSpacing="18"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Items}" ItemTemplate="{StaticResource ResourceCardTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <controls:WaterfallPanel ColumnWidth="300" ColumnSpacing="18" RowSpacing="18"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+
+                    <controls:PaginationBar CurrentPage="{Binding CurrentPage}"
+                                            TotalPages="{Binding TotalPages}"
+                                            PreviousPageCommand="{Binding GoToPreviousPageCommand}"
+                                            NextPageCommand="{Binding GoToNextPageCommand}"/>
+                </StackPanel>
             </ScrollViewer>
 
             <Panel IsVisible="{Binding ShowEmptyHint}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,40,0,0">

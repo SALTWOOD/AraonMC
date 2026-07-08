@@ -250,4 +250,82 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushGray4}"/>
     </Style>
 
+    <!-- ============================== -->
+    <!--  PaginationBar -->
+    <!-- ============================== -->
+    <Style Selector="Button.pagination">
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="36"/>
+    </Style>
+    <Style Selector="Button.pagination:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ColorBrushGray4}"/>
+    </Style>
+    <Style Selector="Button.pagination:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ColorBrush3}"/>
+    </Style>
+    <Style Selector="Button.pagination:disabled /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Opacity" Value="0.3"/>
+    </Style>
+    <Style Selector="Button.pagination Path">
+        <Setter Property="Stroke" Value="{DynamicResource ColorBrushGray2}"/>
+        <Setter Property="StrokeThickness" Value="2.5"/>
+        <Setter Property="StrokeLineCap" Value="Round"/>
+        <Setter Property="StrokeJoin" Value="Round"/>
+        <Setter Property="Fill" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.pagination:disabled Path">
+        <Setter Property="Stroke" Value="{DynamicResource ColorBrushGray4}"/>
+    </Style>
+
+    <Style Selector="controls|PaginationBar">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="controls:PaginationBar">
+                <Border Background="Transparent"
+                        HorizontalAlignment="Stretch"
+                        Padding="0,16,0,0">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Spacing="10">
+                        <Button Name="PART_PrevButton"
+                                Classes="pagination"
+                                IsEnabled="False">
+                            <Viewbox Width="16" Height="16" Stretch="Uniform">
+                                <Canvas Width="20" Height="20">
+                                    <Path Data="M13,4 L7,10 L13,16"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+
+                        <Border CornerRadius="10"
+                                Background="{DynamicResource ColorBrushGray6}"
+                                Padding="18,9">
+                            <TextBlock Name="PART_PageText"
+                                       Text="1 / 1"
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ColorBrushGray1}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Button Name="PART_NextButton"
+                                Classes="pagination"
+                                IsEnabled="False">
+                            <Viewbox Width="16" Height="16" Stretch="Uniform">
+                                <Canvas Width="20" Height="20">
+                                    <Path Data="M7,4 L13,10 L7,16"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
 </Styles>

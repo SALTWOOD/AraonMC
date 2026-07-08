@@ -26,6 +26,7 @@ namespace AraonMC.ViewModels.Pages;
 public partial class BrowseViewModel : PageViewModelBase
 {
     private const int SearchDebounceMs = 350;
+    private const int PageSize = 30;
 
     private readonly IResourceRepository _repo;
     private readonly IDownloadManager _downloads;
@@ -102,12 +103,17 @@ public partial class BrowseViewModel : PageViewModelBase
     [ObservableProperty] private bool _isBusy;
     [ObservableProperty] private bool _showEmptyHint;
 
-    partial void OnSelectedTypeOptionChanged(Option<ResourceType>? value) => TriggerSearchIfReady(true);
-    partial void OnSelectedSourceOptionChanged(Option<ResourceSourceFilter>? value) => TriggerSearchIfReady(true);
-    partial void OnSelectedLoaderOptionChanged(Option<LoaderType?>? value) => TriggerSearchIfReady(true);
-    partial void OnSelectedSortOptionChanged(Option<ResourceSort>? value) => TriggerSearchIfReady(true);
-    partial void OnSearchTextChanged(string value) => TriggerSearchIfReady(false);
-    partial void OnGameVersionChanged(string value) => TriggerSearchIfReady(false);
+    [ObservableProperty] private int _currentPage = 1;
+    [ObservableProperty] private int _totalPages = 1;
+
+    partial void OnSelectedTypeOptionChanged(Option<ResourceType>? value) { CurrentPage = 1; TriggerSearchIfReady(true); }
+    partial void OnSelectedSourceOptionChanged(Option<ResourceSourceFilter>? value) { CurrentPage = 1; TriggerSearchIfReady(true); }
+    partial void OnSelectedLoaderOptionChanged(Option<LoaderType?>? value) { CurrentPage = 1; TriggerSearchIfReady(true); }
+    partial void OnSelectedSortOptionChanged(Option<ResourceSort>? value) { CurrentPage = 1; TriggerSearchIfReady(true); }
+    partial void OnSearchTextChanged(string value) { CurrentPage = 1; TriggerSearchIfReady(false); }
+    partial void OnGameVersionChanged(string value) { CurrentPage = 1; TriggerSearchIfReady(false); }
+    partial void OnCurrentPageChanged(int value) => NotifyPaginationCanExecuteChanged();
+    partial void OnTotalPagesChanged(int value) => NotifyPaginationCanExecuteChanged();
 
     private void TriggerSearchIfReady(bool immediate)
     {
@@ -144,6 +150,7 @@ public partial class BrowseViewModel : PageViewModelBase
     private async Task SearchAsync(CancellationToken ct)
     {
         var source = SelectedSourceOption!.Value;
+        var offset = (CurrentPage - 1) * PageSize;
         var query = new ResourceSearchQuery
         {
             Type = SelectedTypeOption!.Value,
@@ -152,7 +159,8 @@ public partial class BrowseViewModel : PageViewModelBase
             GameVersion = string.IsNullOrWhiteSpace(GameVersion) ? null : GameVersion.Trim(),
             Sort = SelectedSortOption!.Value,
             Sources = source,
-            Limit = 30,
+            Limit = PageSize,
+            Offset = offset,
         };
 
         // CurseForge-only with no key configured: explain instead of silently showing nothing.
@@ -161,6 +169,8 @@ public partial class BrowseViewModel : PageViewModelBase
             Items.Clear();
             IsBusy = false;
             ShowEmptyHint = true;
+            TotalPages = 1;
+            CurrentPage = 1;
             ShowCurseForgeConfigHint();
             return;
         }
@@ -174,7 +184,13 @@ public partial class BrowseViewModel : PageViewModelBase
             Items.Clear();
             foreach (var r in results) Items.Add(r);
             ShowEmptyHint = Items.Count == 0;
-            DebugLog.Info($"Browse: showing {Items.Count} result(s) for type={query.Type} source={query.Sources}.");
+
+            TotalPages = query.TotalCount > 0
+                ? (query.TotalCount + PageSize - 1) / PageSize
+                : (Items.Count < PageSize ? 1 : CurrentPage + 1);
+            if (CurrentPage > TotalPages) CurrentPage = TotalPages;
+
+            DebugLog.Info($"Browse: showing {Items.Count} result(s) (total: {query.TotalCount}, page {CurrentPage}/{TotalPages}) for type={query.Type} source={query.Sources}.");
         }
         finally
         {
@@ -271,6 +287,36 @@ public partial class BrowseViewModel : PageViewModelBase
             await _notifications.ShowAsync(NotificationRequest.Toast(
                 "Couldn't open page", ex.Message, NotificationLevel.Warning));
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanGoToPreviousPage))]
+    private void GoToPreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+            TriggerSearch(true);
+        }
+    }
+
+    private bool CanGoToPreviousPage() => CurrentPage > 1;
+
+    [RelayCommand(CanExecute = nameof(CanGoToNextPage))]
+    private void GoToNextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+            TriggerSearch(true);
+        }
+    }
+
+    private bool CanGoToNextPage() => CurrentPage < TotalPages;
+
+    private void NotifyPaginationCanExecuteChanged()
+    {
+        GoToPreviousPageCommand.NotifyCanExecuteChanged();
+        GoToNextPageCommand.NotifyCanExecuteChanged();
     }
 
     private static string LabelFor(ResourceType t) => t switch

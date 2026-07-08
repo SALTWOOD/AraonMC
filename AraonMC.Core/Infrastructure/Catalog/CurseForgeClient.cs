@@ -51,7 +51,8 @@ public sealed class CurseForgeClient
         }
 
         var pageSize = Math.Clamp(query.Limit, 1, 50);
-        var url = BuildSearchUrl(query, classId.Value, pageSize);
+        var index = Math.Max(query.Offset, 0);
+        var url = BuildSearchUrl(query, classId.Value, pageSize, index);
         DebugLog.Info($"CurseForge: GET {url}");
 
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
@@ -67,20 +68,23 @@ public sealed class CurseForgeClient
             return [];
         }
 
+        if (body.Pagination?.TotalCount is { } total)
+            query.TotalCount = Math.Max(query.TotalCount, total);
+
         var results = new List<ResourceInfo>(body.Data.Count);
         foreach (var mod in body.Data) results.Add(Map(mod, query.Type));
         DebugLog.Info($"CurseForge: returned {results.Count} result(s) for type '{query.Type}'.");
         return results;
     }
 
-    private static string BuildSearchUrl(ResourceSearchQuery q, int classId, int pageSize)
+    private static string BuildSearchUrl(ResourceSearchQuery q, int classId, int pageSize, int index)
     {
         var parts = new List<string>
         {
             $"gameId={MinecraftGameId.ToString(CultureInfo.InvariantCulture)}",
             $"classId={classId.ToString(CultureInfo.InvariantCulture)}",
             $"pageSize={pageSize.ToString(CultureInfo.InvariantCulture)}",
-            "index=0",
+            $"index={index.ToString(CultureInfo.InvariantCulture)}",
             "sortOrder=desc",
             $"sortField={CatalogMappings.CurseForgeSortField(q.Sort).ToString(CultureInfo.InvariantCulture)}",
         };
@@ -183,6 +187,12 @@ public sealed class CurseForgeClient
     private sealed class SearchResponse
     {
         [JsonPropertyName("data")] public List<Mod>? Data { get; set; }
+        [JsonPropertyName("pagination")] public Pagination? Pagination { get; set; }
+    }
+
+    private sealed class Pagination
+    {
+        [JsonPropertyName("totalCount")] public int? TotalCount { get; set; }
     }
 
     private sealed class Mod

@@ -55,7 +55,7 @@ public sealed class ResourceRepository : IResourceRepository
 
         var all = outcomes.SelectMany(o => o.Results).ToList();
         var merged = Merge(all, query.Sort, query.Limit);
-        DebugLog.Info($"Search: merged {merged.Count} result(s) from {outcomes.Count(o => o.Ok)} source(s).");
+        DebugLog.Info($"Search: merged {merged.Count} result(s) from {outcomes.Count(o => o.Ok)} source(s) (total: {query.TotalCount}).");
         return merged;
     }
 

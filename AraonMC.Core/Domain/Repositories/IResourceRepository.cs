@@ -63,4 +63,10 @@ public sealed class ResourceSearchQuery
 
     /// <summary>Max results requested per platform (each client caps it to its own page-size maximum).</summary>
     public int Limit { get; init; } = 30;
+
+    /// <summary>Result offset for pagination (0-based).</summary>
+    public int Offset { get; init; } = 0;
+
+    /// <summary>Set by the repository after a search completes with the total matching count across all sources.</summary>
+    public int TotalCount { get; set; }
 }

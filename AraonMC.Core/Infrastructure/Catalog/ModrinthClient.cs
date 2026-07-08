@@ -52,7 +52,8 @@ public sealed class ModrinthClient
             facets.Add(new List<string> { $"versions:{query.GameVersion!.Trim()}" });
 
         var limit = Math.Clamp(query.Limit, 1, 100);
-        var url = BuildSearchUrl(query.Text, facets, query.Sort, limit);
+        var offset = Math.Max(query.Offset, 0);
+        var url = BuildSearchUrl(query.Text, facets, query.Sort, limit, offset);
         DebugLog.Info($"Modrinth: GET {url}");
 
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
@@ -67,9 +68,11 @@ public sealed class ModrinthClient
             return [];
         }
 
+        query.TotalCount = Math.Max(query.TotalCount, body.TotalHits);
+
         var results = new List<ResourceInfo>(body.Hits.Count);
         foreach (var hit in body.Hits) results.Add(Map(hit, query.Type));
-        DebugLog.Info($"Modrinth: returned {results.Count} result(s) for type '{query.Type}'.");
+        DebugLog.Info($"Modrinth: returned {results.Count} result(s) for type '{query.Type}' (total: {body.TotalHits}).");
         return results;
     }
 
@@ -121,12 +124,13 @@ public sealed class ModrinthClient
         _ => "release",
     };
 
-    private static string BuildSearchUrl(string text, List<List<string>> facets, ResourceSort sort, int limit)
+    private static string BuildSearchUrl(string text, List<List<string>> facets, ResourceSort sort, int limit, int offset)
     {
         var facetsJson = JsonSerializer.Serialize(facets);
         var parts = new List<string>
         {
             $"limit={limit.ToString(CultureInfo.InvariantCulture)}",
+            $"offset={offset.ToString(CultureInfo.InvariantCulture)}",
             $"index={CatalogMappings.ModrinthIndex(sort)}",
             $"facets={Uri.EscapeDataString(facetsJson)}",
         };
@@ -180,6 +184,7 @@ public sealed class ModrinthClient
     private sealed class SearchResponse
     {
         [JsonPropertyName("hits")] public List<SearchHit>? Hits { get; set; }
+        [JsonPropertyName("total_hits")] public int TotalHits { get; set; }
     }
 
     private sealed class SearchHit
