@@ -3,6 +3,7 @@
              xmlns:pages="using:AraonMC.ViewModels.Pages"
              xmlns:models="using:AraonMC.Core.Domain.Entities"
              xmlns:conv="using:AraonMC.Converters"
+             xmlns:downloads="using:AraonMC.Downloads"
              xmlns:controls="using:AraonMC.Controls"
              xmlns:behaviors="using:AraonMC.Behaviors"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -152,8 +153,28 @@
                     </DataTemplate>
                 </controls:ComboBox.ItemTemplate>
             </controls:ComboBox>
-            <TextBox Classes="field" Text="{Binding GameVersion}" Watermark="Version (e.g. 1.20.1)"
-                     MinWidth="150"/>
+            <controls:ComboBox ItemsSource="{Binding VersionItems}" SelectedItem="{Binding SelectedVersionItem}"
+                         MinWidth="180" PlaceholderText="Version">
+                <controls:ComboBox.ItemTemplate>
+                    <DataTemplate x:CompileBindings="False" DataType="downloads:VersionPickerEntry">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Text="{Binding Label}" FontSize="13"
+                                       FontWeight="SemiBold" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource ColorBrushGray1}"/>
+                            <Border Grid.Column="1" CornerRadius="3" Padding="5,1"
+                                    VerticalAlignment="Center"
+                                    IsVisible="{Binding Version, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                    Background="{DynamicResource ColorBrushGray6}">
+                                <TextBlock Text="{Binding TypeLabel}" FontSize="9" Opacity="0.6"
+                                           Foreground="{DynamicResource ColorBrushGray2}"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </controls:ComboBox.ItemTemplate>
+            </controls:ComboBox>
+            <CheckBox IsChecked="{Binding ShowAllVersions}" Content="Show all versions"
+                      VerticalAlignment="Center" FontSize="12"
+                      Foreground="{DynamicResource ColorBrushGray1}"/>
             <controls:ComboBox ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSortOption}"
                          MinWidth="160" PlaceholderText="Sort by">
                 <controls:ComboBox.ItemTemplate>

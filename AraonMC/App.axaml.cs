@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using Avalonia.Styling;
 using AraonMC.Accounts;
 using AraonMC.Auth;
 using AraonMC.Core.Application.Notifications;
@@ -60,6 +61,8 @@ public partial class App : Application
             DebugLog.Info($"App: config loaded — global='{ConfigPaths.GlobalConfigFile()}', instances='{ConfigPaths.InstancesConfigFile()}', active game directory='{ConfigPaths.GameDirectory()}'.");
 
             ThemeService.Initialize();
+            ApplyThemeVariant();
+            ThemeService.ColorModeChanged += (isDark, _) => ApplyThemeVariant();
             DebugLog.Info($"App: theme initialized — mode={CoreConfig.Theme.ColorMode}, theme={ThemeService.CurrentTheme}.");
 
             var deviceCodeUi = new AvaloniaDeviceCodeUI();
@@ -81,8 +84,9 @@ public partial class App : Application
             var installer = InstallerFactory.Create(http);
             DebugLog.Info($"App: Minecraft installer created.");
             IVersionList versions = new MinecraftVersionCatalog(new MojangManifestParser(http));
+            IVersionListService versionList = new VersionListService(http);
             var natives = new NativeLibraryExtractor(http);
-            DebugLog.Info("App: version catalog + native extractor ready.");
+            DebugLog.Info("App: version catalog + version list service + native extractor ready.");
 
             var instances = new JsonInstanceRepository(notifications);
             DebugLog.Info($"App: instance repository ready — {instances.GetAll().Count} instance(s).");
@@ -122,11 +126,17 @@ public partial class App : Application
                 await versionWindow.ShowDialog(window);
                 return vm.SelectedVersion;
             };
-            window.DataContext = new MainWindowViewModel(accounts, instances, versions, downloads, resources, launcher, notifications, pickFolder, pickSaveFile, pickVersion);
+            window.DataContext = new MainWindowViewModel(accounts, instances, versions, versionList, downloads, resources, launcher, notifications, pickFolder, pickSaveFile, pickVersion);
             desktop.MainWindow = window;
             DebugLog.Info("App: main window data-bound and shown; startup complete. Ready.");
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void ApplyThemeVariant()
+    { 
+        Current!.RequestedThemeVariant = 
+            ThemeService.IsDarkMode ? ThemeVariant.Dark : ThemeVariant.Light;
     }
 }

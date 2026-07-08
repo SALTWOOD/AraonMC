@@ -30,6 +30,7 @@ public partial class BrowseViewModel : PageViewModelBase
 
     private readonly IResourceRepository _repo;
     private readonly IDownloadManager _downloads;
+    private readonly IVersionListService _versionList;
     private readonly INotificationService _notifications;
     private readonly Func<string?, Task<string?>> _pickSaveFile;
     private readonly Func<ResourceInfo, Task<ResourceVersion?>> _pickVersion;
@@ -37,16 +38,19 @@ public partial class BrowseViewModel : PageViewModelBase
     private CancellationTokenSource? _searchCts;
     private bool _installing; // re-entry guard for the detail/download flow.
     private bool _curseForgeHintShown;
+    private IReadOnlyList<VersionPickerGroup>? _versionGroups;
 
     public BrowseViewModel(
         IResourceRepository repo,
         IDownloadManager downloads,
+        IVersionListService versionList,
         INotificationService notifications,
         Func<string?, Task<string?>> pickSaveFile,
         Func<ResourceInfo, Task<ResourceVersion?>> pickVersion)
     {
         _repo = repo;
         _downloads = downloads;
+        _versionList = versionList;
         _notifications = notifications;
         _pickSaveFile = pickSaveFile;
         _pickVersion = pickVersion;
@@ -80,6 +84,11 @@ public partial class BrowseViewModel : PageViewModelBase
         SelectedLoaderOption = Loaders[0];
         SelectedSortOption = Sorts[0];
 
+        var anyVersion = new VersionPickerEntry { Label = "Any version", IsGroup = false, Version = null };
+        VersionItems.Add(anyVersion);
+        SelectedVersionItem = anyVersion;
+        _ = LoadVersionsAsync();
+
         _suppressSearch = false;
         TriggerSearch(immediate: false); // initial browse
     }
@@ -102,6 +111,11 @@ public partial class BrowseViewModel : PageViewModelBase
     [ObservableProperty] private string _gameVersion = string.Empty;
     [ObservableProperty] private bool _isBusy;
     [ObservableProperty] private bool _showEmptyHint;
+    [ObservableProperty] private bool _showAllVersions;
+
+    public ObservableCollection<VersionPickerEntry> VersionItems { get; } = new();
+
+    [ObservableProperty] private VersionPickerEntry? _selectedVersionItem;
 
     [ObservableProperty] private int _currentPage = 1;
     [ObservableProperty] private int _totalPages = 1;
@@ -112,6 +126,11 @@ public partial class BrowseViewModel : PageViewModelBase
     partial void OnSelectedSortOptionChanged(Option<ResourceSort>? value) { CurrentPage = 1; TriggerSearchIfReady(true); }
     partial void OnSearchTextChanged(string value) { CurrentPage = 1; TriggerSearchIfReady(false); }
     partial void OnGameVersionChanged(string value) { CurrentPage = 1; TriggerSearchIfReady(false); }
+    partial void OnSelectedVersionItemChanged(VersionPickerEntry? value)
+    {
+        GameVersion = value?.Version ?? string.Empty;
+    }
+    partial void OnShowAllVersionsChanged(bool value) => ApplyVersionFilter();
     partial void OnCurrentPageChanged(int value) => NotifyPaginationCanExecuteChanged();
     partial void OnTotalPagesChanged(int value) => NotifyPaginationCanExecuteChanged();
 
@@ -196,6 +215,53 @@ public partial class BrowseViewModel : PageViewModelBase
         {
             IsBusy = false;
         }
+    }
+
+    private async Task LoadVersionsAsync()
+    {
+        try
+        {
+            _versionGroups = await _versionList.GetGroupedVersionsAsync();
+            ApplyVersionFilter();
+            DebugLog.Info($"Browse: loaded {_versionGroups.Count} version group(s).");
+        }
+        catch (Exception ex)
+        {
+            DebugLog.Error($"Browse: failed to load version list — {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    private void ApplyVersionFilter()
+    {
+        if (_versionGroups is null) return;
+
+        var previouslySelected = SelectedVersionItem?.Version;
+        VersionItems.Clear();
+        VersionItems.Add(new VersionPickerEntry { Label = "Any version", IsGroup = false, Version = null });
+
+        foreach (var group in _versionGroups)
+        {
+            var visible = ShowAllVersions
+                ? group.Versions
+                : group.Versions.Where(v => v.Type == VersionType.Release).ToList();
+
+            foreach (var v in visible)
+            {
+                VersionItems.Add(new VersionPickerEntry
+                {
+                    Label = v.Id,
+                    Version = v.Id,
+                    Type = v.Type,
+                    ReleaseTime = v.ReleaseTime,
+                    IsGroup = false,
+                });
+            }
+        }
+
+        if (previouslySelected is not null)
+            SelectedVersionItem = VersionItems.FirstOrDefault(e => e.Version == previouslySelected);
+        else
+            SelectedVersionItem = VersionItems.FirstOrDefault();
     }
 
     private void ShowCurseForgeConfigHint()

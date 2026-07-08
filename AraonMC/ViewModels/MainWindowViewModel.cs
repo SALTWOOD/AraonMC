@@ -23,6 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IAccountService accounts,
         IInstanceRepository instances,
         IVersionList versions,
+        IVersionListService versionList,
         IDownloadManager downloads,
         IResourceRepository resources,
         IGameLauncher launcher,
@@ -36,7 +37,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var instancesPage = new InstancesViewModel(instances, launcher, accounts, notifications, ShowVersionSelect);
         var downloadsPage = new DownloadsViewModel(downloads);
         _versionSelectPage = new VersionSelectViewModel(versions, instances, downloads, NavigateToDownloads);
-        var browsePage = new BrowseViewModel(resources, downloads, notifications, pickSaveFile, pickVersion);
+        var browsePage = new BrowseViewModel(resources, downloads, versionList, notifications, pickSaveFile, pickVersion);
         var accountsPage = new AccountsViewModel(accounts, notifications);
         var settings = new SettingsViewModel(notifications, pickFolder);
 
