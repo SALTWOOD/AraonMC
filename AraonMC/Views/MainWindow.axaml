@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource ColorBrushBackground}"
         ExtendClientAreaToDecorationsHint="True"
-        WindowDecorations="None"
+        WindowDecorations="Full"
         ExtendClientAreaTitleBarHeightHint="-1">
 
     <Window.Resources>
@@ -69,110 +69,75 @@
         </DataTemplate>
     </Window.Resources>
 
-    <Grid RowDefinitions="44,*">
+    <Grid ColumnDefinitions="220,*" Margin="0,44,0,0">
 
-        <!-- Titlebar -->
-        <Border x:Name="TitleBar"
-                Grid.Row="0"
-                Background="{DynamicResource ColorBrushBackground}"
-                BorderBrush="{DynamicResource ColorBrushGray7}"
-                BorderThickness="0,0,0,1"
-                PointerPressed="TitleBar_PointerPressed"
-                DoubleTapped="TitleBar_DoubleTapped">
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="16,0" Spacing="10" VerticalAlignment="Center" IsHitTestVisible="False">
-                    <Border Width="22" Height="22" CornerRadius="6" Background="{DynamicResource ColorBrush4}"/>
-                    <TextBlock Text="AraonMC" FontWeight="Bold" FontSize="14"
-                               Foreground="{DynamicResource ColorBrushGray1}" VerticalAlignment="Center"/>
-                    <TextBlock Text="0.1.0" FontSize="11" Margin="0,0,0,0"
-                               Foreground="{DynamicResource ColorBrushGray3}" VerticalAlignment="Center"/>
-                </StackPanel>
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="{DynamicResource ColorBrushBackground}">
+            <Grid RowDefinitions="*,Auto">
+                <ScrollViewer Grid.Row="0" Padding="0,10,0,10" HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding NavItems}" ItemTemplate="{StaticResource NavItemTemplate}"/>
+                </ScrollViewer>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,8,0">
-                    <Button Classes="chrome" Click="Minimize_Click" ToolTip.Tip="Minimize">
-                        <Rectangle Width="14" Height="2" RadiusX="1" RadiusY="1" Fill="{DynamicResource ColorBrushGray2}"/>
-                    </Button>
-                    <Button Classes="chrome" Click="Maximize_Click" ToolTip.Tip="Maximize">
-                        <Path Data="{StaticResource square}"/>
-                    </Button>
-                    <Button Classes="chrome" x:Name="closeBtn" Click="Close_Click" ToolTip.Tip="Close">
-                        <Path Data="{StaticResource x}"/>
-                    </Button>
-                </StackPanel>
+                <!-- Account footer -->
+                <Border Grid.Row="1"
+                        Padding="8"
+                        BorderBrush="{DynamicResource ColorBrushGray7}"
+                        BorderThickness="0,1,0,0">
+                    <Grid>
+                        <Button Classes="flat"
+                                Command="{Binding ToggleAccountSwitcherCommand}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch">
+                            <Border CornerRadius="10" Padding="10,8">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <Border Classes="avatar" Width="34" Height="34" Background="{DynamicResource ColorBrush4}">
+                                        <TextBlock Text="{Binding ActiveAccount.AvatarKey}"
+                                                   Foreground="{DynamicResource ColorBrush1}"
+                                                   FontWeight="Bold" FontSize="13"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ActiveAccount.Username}"
+                                                   Foreground="{DynamicResource ColorBrushGray1}"
+                                                   FontWeight="SemiBold"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <Ellipse Width="7" Height="7" Fill="{DynamicResource ColorBrushOnline}" IsVisible="{Binding ActiveAccount.IsOnline}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding ActiveAccount.IsOnline, Converter={StaticResource BoolToStatus}}"
+                                                       Foreground="{DynamicResource ColorBrushGray2}" FontSize="11"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Path Grid.Column="2" Width="14" Height="14" Stretch="Uniform"
+                                          Fill="Transparent" Stroke="{DynamicResource ColorBrushGray3}" StrokeThickness="1.5"
+                                          Data="{StaticResource chevron-down}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Button>
+
+                        <Popup IsOpen="{Binding IsAccountSwitcherOpen, Mode=TwoWay}"
+                               Placement="Top"
+                               HorizontalOffset="8"
+                               Width="240">
+                            <Border Classes="card" Padding="4" Background="{DynamicResource ColorBrushGray5}">
+                                <StackPanel>
+                                    <TextBlock Text="Switch account" FontSize="11" Foreground="{DynamicResource ColorBrushGray3}" Margin="8,6,8,4"/>
+                                    <ItemsControl ItemsSource="{Binding Accounts}" ItemTemplate="{StaticResource AccountSwitchItemTemplate}"/>
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
 
-        <!-- Body -->
-        <Grid Grid.Row="1" ColumnDefinitions="220,*">
-
-            <!-- Sidebar -->
-            <Border Grid.Column="0" Background="{DynamicResource ColorBrushBackground}">
-                <Grid RowDefinitions="*,Auto">
-                    <ScrollViewer Grid.Row="0" Padding="0,10,0,10" HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding NavItems}" ItemTemplate="{StaticResource NavItemTemplate}"/>
-                    </ScrollViewer>
-
-                    <!-- Account footer -->
-                    <Border Grid.Row="1"
-                            Padding="8"
-                            BorderBrush="{DynamicResource ColorBrushGray7}"
-                            BorderThickness="0,1,0,0">
-                        <Grid>
-                            <Button Classes="flat"
-                                    Command="{Binding ToggleAccountSwitcherCommand}"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch">
-                                <Border CornerRadius="10" Padding="10,8">
-                                    <Grid ColumnDefinitions="Auto,*,Auto">
-                                        <Border Classes="avatar" Width="34" Height="34" Background="{DynamicResource ColorBrush4}">
-                                            <TextBlock Text="{Binding ActiveAccount.AvatarKey}"
-                                                       Foreground="{DynamicResource ColorBrush1}"
-                                                       FontWeight="Bold" FontSize="13"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding ActiveAccount.Username}"
-                                                       Foreground="{DynamicResource ColorBrushGray1}"
-                                                       FontWeight="SemiBold"/>
-                                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                                <Ellipse Width="7" Height="7" Fill="{DynamicResource ColorBrushOnline}" IsVisible="{Binding ActiveAccount.IsOnline}" VerticalAlignment="Center"/>
-                                                <TextBlock Text="{Binding ActiveAccount.IsOnline, Converter={StaticResource BoolToStatus}}"
-                                                           Foreground="{DynamicResource ColorBrushGray2}" FontSize="11"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <Path Grid.Column="2" Width="14" Height="14" Stretch="Uniform"
-                                              Fill="Transparent" Stroke="{DynamicResource ColorBrushGray3}" StrokeThickness="1.5"
-                                              Data="{StaticResource chevron-down}" VerticalAlignment="Center"/>
-                                    </Grid>
-                                </Border>
-                            </Button>
-
-                            <Popup IsOpen="{Binding IsAccountSwitcherOpen, Mode=TwoWay}"
-                                   Placement="Top"
-                                   HorizontalOffset="8"
-                                   Width="240">
-                                <Border Classes="card" Padding="4" Background="{DynamicResource ColorBrushGray5}">
-                                    <StackPanel>
-                                        <TextBlock Text="Switch account" FontSize="11" Foreground="{DynamicResource ColorBrushGray3}" Margin="8,6,8,4"/>
-                                        <ItemsControl ItemsSource="{Binding Accounts}" ItemTemplate="{StaticResource AccountSwitchItemTemplate}"/>
-                                    </StackPanel>
-                                </Border>
-                            </Popup>
-                        </Grid>
-                    </Border>
-                </Grid>
+        <!-- Content -->
+        <Grid Grid.Column="1" RowDefinitions="Auto,*" Background="{DynamicResource ColorBrushBackground}">
+            <Border Grid.Row="0" Padding="28,18,28,14">
+                <TextBlock Text="{Binding CurrentPage.Title}"
+                           FontSize="26" FontWeight="Bold"
+                           Foreground="{DynamicResource ColorBrushGray1}"/>
             </Border>
-
-            <!-- Content -->
-            <Grid Grid.Column="1" RowDefinitions="Auto,*" Background="{DynamicResource ColorBrushBackground}">
-                <Border Grid.Row="0" Padding="28,18,28,14">
-                    <TextBlock Text="{Binding CurrentPage.Title}"
-                               FontSize="26" FontWeight="Bold"
-                               Foreground="{DynamicResource ColorBrushGray1}"/>
-                </Border>
-                <ContentControl Grid.Row="1" Content="{Binding CurrentPage}"/>
-            </Grid>
-
+            <ContentControl Grid.Row="1" Content="{Binding CurrentPage}"/>
         </Grid>
+
     </Grid>
 </Window>
