@@ -2,8 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AraonMC.App"
              xmlns:local="using:AraonMC"
-             xmlns:conv="using:AraonMC.Converters"
-             RequestedThemeVariant="Dark">
+             xmlns:conv="using:AraonMC.Converters">
 
     <Application.DataTemplates>
         <local:ViewLocator/>
