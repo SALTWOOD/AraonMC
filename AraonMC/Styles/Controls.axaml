@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:AraonMC.Controls">
+        xmlns:controls="using:AraonMC.Controls"
+        xmlns:chrome="using:Avalonia.Controls.Chrome">
 
     <!-- Primary accent button (PLAY / confirm) -->
     <Style Selector="Button.accent">
@@ -85,10 +86,10 @@
     <Style Selector="Button.chrome:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource ColorBrushGray6}"/>
     </Style>
-    <Style Selector="Button.chrome#closeBtn:pointerover /template/ ContentPresenter">
+    <Style Selector="Button.chrome#PART_CloseButton:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource ColorBrushDanger}"/>
     </Style>
-    <Style Selector="Button.chrome#closeBtn:pointerover Path">
+    <Style Selector="Button.chrome#PART_CloseButton:pointerover Path">
         <Setter Property="Stroke" Value="White"/>
     </Style>
 
@@ -325,6 +326,60 @@
                     </StackPanel>
                 </Border>
             </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- ============================== -->
+    <!--  WindowDrawnDecorations -->
+    <!-- ============================== -->
+    <Style Selector="chrome|WindowDrawnDecorations">
+        <Setter Property="DefaultTitleBarHeight" Value="44"/>
+        <Setter Property="DefaultFrameThickness" Value="0"/>
+        <Setter Property="DefaultShadowThickness" Value="0"/>
+        <Setter Property="Template">
+            <WindowDrawnDecorationsTemplate>
+                <WindowDrawnDecorationsContent>
+
+                    <WindowDrawnDecorationsContent.Underlay>
+                        <Border Background="{DynamicResource ColorBrushBackground}"/>
+                    </WindowDrawnDecorationsContent.Underlay>
+
+                    <WindowDrawnDecorationsContent.Overlay>
+                        <Border Height="{TemplateBinding TitleBarHeight}"
+                                VerticalAlignment="Top"
+                                Background="{DynamicResource ColorBrushBackground}"
+                                BorderBrush="{DynamicResource ColorBrushGray7}"
+                                BorderThickness="0,0,0,1"
+                                chrome:WindowDecorationProperties.ElementRole="TitleBar">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <StackPanel Grid.Column="0" Orientation="Horizontal"
+                                            Margin="16,0" Spacing="10" VerticalAlignment="Center">
+                                    <Border Width="22" Height="22" CornerRadius="6" Background="{DynamicResource ColorBrush4}"/>
+                                    <TextBlock Text="AraonMC" FontWeight="Bold" FontSize="14"
+                                               Foreground="{DynamicResource ColorBrushGray1}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="0.1.0" FontSize="11"
+                                               Foreground="{DynamicResource ColorBrushGray3}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,8,0">
+                                    <Button x:Name="PART_MinimizeButton" Classes="chrome" ToolTip.Tip="Minimize"
+                                            chrome:WindowDecorationProperties.ElementRole="DecorationsElement">
+                                        <Rectangle Width="14" Height="2" RadiusX="1" RadiusY="1" Fill="{DynamicResource ColorBrushGray2}"/>
+                                    </Button>
+                                    <Button x:Name="PART_MaximizeButton" Classes="chrome" ToolTip.Tip="Maximize"
+                                            chrome:WindowDecorationProperties.ElementRole="DecorationsElement">
+                                        <Path Data="{StaticResource square}"/>
+                                    </Button>
+                                    <Button x:Name="PART_CloseButton" Classes="chrome" ToolTip.Tip="Close"
+                                            chrome:WindowDecorationProperties.ElementRole="DecorationsElement">
+                                        <Path Data="{StaticResource x}"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </WindowDrawnDecorationsContent.Overlay>
+
+                </WindowDrawnDecorationsContent>
+            </WindowDrawnDecorationsTemplate>
         </Setter>
     </Style>
 
