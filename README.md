@@ -4,6 +4,8 @@
 
 # AraonMC
 ✨🎉 **An-an-another brand-new cross-platform Minecraft launcher!** 🎉✨
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 </div>
 
 > [!WARNING]
@@ -11,6 +13,12 @@
 
 > [!IMPORTANT]
 > I'm not good at frontend, so I used GPT-5.4 to quickly build a UI. I will modify and improve UI and write backend logic manually.
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+
+See the [LICENSE](LICENSE) file for the full text.
 
 # How to use
 
