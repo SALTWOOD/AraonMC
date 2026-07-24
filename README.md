@@ -9,7 +9,7 @@
 </div>
 
 > [!WARNING]
-> This project is still in development, currently only a UI without actual logic and functions.
+> This project is still in development, currently only a UI with a few actual logic and functions.
 
 > [!IMPORTANT]
 > I'm not good at frontend, so I used GPT-5.4 to quickly build a UI. I will modify and improve UI and write backend logic manually.
